@@ -41,6 +41,13 @@ namespace MicroState
             return attr;
         }
 
+		protected ListAttribute<T> CreateListAttribute<T>(T[] content = null)
+        {
+			var attr = content != null ? new ListAttribute<T>(content, this.NotifyChange) : new ListAttribute<T>(this.NotifyChange);
+            this.copyableAttributes.Add(attr);
+            return attr;
+        }
+
         /// <summary>
 		/// Default copy behaviour; have each instance in our copyableAttributes
 		/// list copy from each instance in the other state's copyableAttributes
