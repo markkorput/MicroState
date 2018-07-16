@@ -30,35 +30,31 @@ that can be accessed using the Unity component editor.
 namespace MyProject.MyComponent {
 
   class State : MicroState.State {
-    public MicroState.Attribute<string> SomeTextAttr { get; private set; };
-    public MicroState.Attribute<bool> SomeFlagAttr { get; private set; };
-    public MicroState.Attribute<int> SomeNumberAttr { get; private set; };
-    public MicroState.Attribute<float> SomeDecimalAttr { get; private set; };
+    public MicroState.Attribute<string> TitleAttr { get; private set; };
+    public MicroState.Attribute<bool> ShowHelpAttr { get; private set; };
+    public MicroState.Attribute<float> ProgressAttr { get; private set; };
 
     public MyComponent() {
-      SomeTextAttr = base.CreateAttribute<string>();
-      SomeFlagAttr = base.CreateAttribute<flag>(false);
-      SomeNumberAttr = base.CreateAttribute<int>(-1);
-      SomeDecimalAttr = base.CreateAttribute<float>(0.0f);
+      TitleAttr = base.CreateAttribute<string>();
+      ShowHelpAttr = base.CreateAttribute<bool>(false);
+      ProgressAttr = base.CreateAttribute<float>(0.0f);
     }
   }
 
 
   class MyComponentState : MicroState.StateBehaviour<State> {
     // these public attributes are through the Unity component editor
-    public string SomeText;
-    public bool SomeFlag;
-    public int SomeNumber;
-    public float SomeDecimal;
+    public string Title;
+    public bool ShowHelp;
+    public float Progress;
 
     // Override StateBehaviour's virtual Pull method with custom pull logic
     override protected void Pull(State state)
     {
       // "Pull" individual attribute values from the state
-      this.SomeText = state.SomeTextAttr.Value;
-      this.SomeFlag = state.SomeFlagAttr.Value;
-      this.SomeNumber = state.SomeNumber.Value;
-      this.SomeDecimal = state.SomeDecimal.Value;
+      this.Title = state.TitleAttr.Value;
+      this.ShowHelp = state.ShowHelpAttr.Value;
+      this.Progress = state.ProgressAttr.Value;
     }
 
     // Override StateBehaviour's virtual Push method with custom push logic
@@ -66,10 +62,9 @@ namespace MyProject.MyComponent {
       // trigger single notification for all changes
       state.BatchUpdate(() => {
         // "Push" individual attribute values into the state
-        state.SomeTextAttr.Value = this.SomeText;
-        state.SomeFlagAttr.Value = this.SomeFlag;
-        state.SomeNumber.Value = this.SomeNumber;
-        state.SomeDecimal.Value = this.SomeDecimal;
+        state.TitleAttr.Value = this.Title;
+        state.ShowHelpAttr.Value = this.ShowHelp;
+        state.ProgressAttr.Value = this.Progress;
       });
     }
   }
@@ -96,12 +91,12 @@ namespace MyProject.MyComponent {
 
     private void OnStateUpdate(State previous, State current) {
       // use the data in current to update your components.
-      transform.Find("Title").GetComponent<UnityEngine.UI.Text>().text = current.SomeTextAttr.Value;
-      transform.Find("ProgressIndicator").transform.position = new Vector(current.SomeDecimal.Value, 0, 0);
+      transform.Find("Title").GetComponent<UnityEngine.UI.Text>().text = current.TitleAttr.Value;
+      transform.Find("ProgressIndicator").transform.position = new Vector(current.ProgressAttr.Value, 0, 0);
 
       // Optionally, you can compare value in current with values in previous to see if something changes
-      if (current.SomeFlagAttr.Value != previous.SomeFlagAttr.Value) {
-        SomeChildObject.SetActive(current.SomeFlagAttr.Value);
+      if (current.ShowHelpAttr.Value != previous.ShowHelpAttr.Value) {
+        transform.Find("Help").SetActive(current.ShowHelpAttr.Value);
       }
     }
   }
