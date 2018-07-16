@@ -99,6 +99,12 @@ namespace MyProject.MyComponent {
         transform.Find("Help").SetActive(current.ShowHelpAttr.Value);
       }
     }
+
+    // you can simply write to the Attributes in the State and it will Invoke the necessary Change/Update events
+    // That will trigger update in your UI (assuming you've registered the proper event listeners with UI update logic)
+    public void ToggleHelp() {
+      ComponentState.State.ShowHelp.Value = !ComponentState.State.ShowHelp.Value;
+    }
   }
 }
 ```
