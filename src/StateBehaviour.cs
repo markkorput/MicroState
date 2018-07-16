@@ -27,11 +27,15 @@ namespace MicroState
         public UpdatesEvent UpdateEvent = new UpdatesEvent();
 		#endregion
 
-      
-		void Start()
+		void Awake()
         {
 			state_.ChangeEvent.AddListener(this.OnStateChange);
-			if (PushChanges) Push(this.state_);
+
+			if (PushChanges) {
+				StateType editorState = this.GetEditorState();
+				this.state_.TakeContentFrom(editorState);
+			}
+         
 			if (PullChanges) Pull(this.state_);
         }
 
