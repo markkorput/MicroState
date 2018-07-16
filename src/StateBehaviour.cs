@@ -5,21 +5,29 @@ namespace MicroState
 {
 	public class StateBehaviour<StateType> : MonoBehaviour where StateType : MicroState.State, new()
 	{
-		
-
+		#region Private attributes
 		private StateType state_ = new StateType();
 		private StateType previousState_ = new StateType();
+		private bool mightHaveChanges = false;
+		#endregion
+
       
 		public StateType State { get { return state_; } }
       
-		public class UpdatesEvent : UnityEvent<StateType, StateType> { }
-		public UnityEvent ChangeEvent;
-		public UpdatesEvent UpdateEvent = new UpdatesEvent();
-
+      
+		#region Configurable Attributes      
 		public bool PullChanges = false;
 		public bool PushChanges = false;
-		private bool mightHaveChanges = false;
+		#endregion
 
+
+		#region Events
+		public class UpdatesEvent : UnityEvent<StateType, StateType> { }
+        public UnityEvent ChangeEvent;
+        public UpdatesEvent UpdateEvent = new UpdatesEvent();
+		#endregion
+
+      
 		void Start()
         {
 			state_.ChangeEvent.AddListener(this.OnStateChange);
