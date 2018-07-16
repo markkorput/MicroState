@@ -2,23 +2,23 @@
 state management for fast prototyping in unity
 
 ## When To Use
-The aim of this library is to provide an quick 'n easy way of doing proper state-management without the verbosity of more mature and full-featured solutions.
+The aim of this library is to provide a quick 'n easy way of doing proper state-management without the verbosity of more mature and full-featured solutions.
 
 These tools are specifically intended for developing and testing small components, NOT for managing full-blown complex application. For more complex situations I suggest to have a look at more elaborate libraries, like [UniRX](https://github.com/neuecc/UniRx).
 
 ## Idea
-MicroState wants to help you manage the state of small components, specifically to create a clearly identifiable single source of truth and take away the temptation of using globals/singletons for quick 'n dirty (with emphasise on _dirty_) solutions.
+MicroState wants to help you manage the state of small components, specifically to create a clearly identifiable single source of truth and take away the temptation of using globals/singletons.
 
-Therefore is provides a couple of classes;
+It provides the following classes;
 
-###### MicroState.State
-`State` is a simple C# class (NOT a monobehaviour) and serves as base class for the piece of state that should drive your component.
+##### MicroState.State
+`State` is a simple C# class (NOT a MonoBehaviour) and serves as base class for the piece of state that should drive your component.
 
-###### MicroState.StateBehaviour
-`StateBehaviour` is a Unity 'frontend' for your state; it serves both as _editor_ for your state (giving you the Unity component editor to manipulate your state at runtime). as well as as a _handle_ to your state instance; all components that use the same state should point at the same StateBehaviour and use its State instance instead of relying on a global singleton instance.
+##### MicroState.StateBehaviour
+`StateBehaviour` is a Unity 'frontend' for your state; it serves both as _editor_ for your state (giving you the Unity component editor to manipulate your State at runtime). as well as as a _handle_ to your state instance; all components that use the same State should point at the same StateBehaviour and use its public State attribute instead of relying on a global singleton instance.
 
-##### MicroState.Attribute
-`Attribute` is a helper class to wrap around a single attribute inside your state and helps the MicroState classes to automate a couple of processes and thus reduce the amount of boilerplate code in your application.
+#### MicroState.Attribute
+`Attribute` is a helper class to wrap around a single attribute inside your State and helps the MicroState classes to automate a couple of processes and thus reduce the amount of boilerplate code in your application.
 
 ## Usage
 Create your custom `State` class that contains all the data needed to control your component, and create a custom `StateBehaviour` that defines how to transfer ('push' and 'pull') data between the State instance and its public attributes
