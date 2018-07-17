@@ -22,7 +22,7 @@ namespace MicroState
             get { return value_; }
             set
             {
-                bool change = (!value_.Equals(value));
+				bool change = ((value_ == null && value != null) || !value_.Equals(value));
                 value_ = value;
 				this.NotifyChange();
             }
