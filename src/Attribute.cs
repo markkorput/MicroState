@@ -13,10 +13,9 @@ namespace MicroState
 	/// 
 	/// Mostly used inthe MicroState.State class.
     /// </summary>
-    public class Attribute<T> : ICopyableAttribute
+    public class Attribute<T> : MutationNotifier, ICopyableAttribute
     {
         private T value_;
-        private System.Action changeFunc;
 
         public T Value
         {
@@ -25,19 +24,19 @@ namespace MicroState
             {
                 bool change = (!value_.Equals(value));
                 value_ = value;
-                if (changeFunc != null) changeFunc.Invoke();
+				this.NotifyChange();
             }
         }
 
-        public Attribute(System.Action changeFunc)
+		public Attribute(UnityEngine.Events.UnityAction changeFunc)
         {
-            this.changeFunc = changeFunc;
+			this.ChangeEvent.AddListener(changeFunc);
         }
 
-        public Attribute(T val, System.Action changeFunc)
+		public Attribute(T val, UnityEngine.Events.UnityAction changeFunc)
         {
             this.value_ = val;
-            this.changeFunc = changeFunc;
+			this.ChangeEvent.AddListener(changeFunc);
         }
 
         public void CopyFrom(ICopyableAttribute other)
@@ -45,5 +44,4 @@ namespace MicroState
             this.Value = (other as Attribute<T>).Value;
         }
     }
-   
 }

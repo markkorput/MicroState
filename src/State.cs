@@ -4,30 +4,10 @@ using UnityEngine.Events;
 
 namespace MicroState
 {   
-    public class State
+	public class State : MutationNotifier
 	{
-        public UnityEvent ChangeEvent = new UnityEvent();
-
-		private int postPonersCount = 0;
-		private bool bHasPostponedNotifications = false;
 		private List<ICopyableAttribute> copyableAttributes = new List<ICopyableAttribute>();
 
-		public void BatchUpdate(System.Action func) {
-			postPonersCount += 1;
-			func.Invoke();         
-			postPonersCount -= 1;
-			if (bHasPostponedNotifications) this.NotifyChange();
-		}
-
-		protected void NotifyChange() {
-			if (postPonersCount > 0) {
-				bHasPostponedNotifications = true;
-				return;
-			}
-         
-			ChangeEvent.Invoke();
-		}
-      
 		protected  Attribute<T> CreateAttribute<T>() {
 			var attr = new Attribute<T>(this.NotifyChange);
 			this.copyableAttributes.Add(attr);
@@ -41,7 +21,7 @@ namespace MicroState
             return attr;
         }
 
-		protected ListAttribute<T> CreateListAttribute<T>(T[] content = null)
+		protected ListAttribute<T> CreateListAttribute<T>(T[] content = null) where T : State
         {
 			var attr = content != null ? new ListAttribute<T>(content, this.NotifyChange) : new ListAttribute<T>(this.NotifyChange);
             this.copyableAttributes.Add(attr);
@@ -58,7 +38,7 @@ namespace MicroState
 				Debug.Log("[MicroState.State.TakeContentFrom] source state has different number o copyableAttributes");
 				return;
 			}
-         
+
 			this.BatchUpdate(() =>
 			{
 				for (int i = 0; i < copyableAttributes.Count; i += 1)

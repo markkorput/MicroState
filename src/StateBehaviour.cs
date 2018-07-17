@@ -5,7 +5,7 @@ namespace MicroState
 {
 	public class StateBehaviour<StateType> : MonoBehaviour where StateType : MicroState.State, new()
 	{
-		#region Private attributes
+		#region Private attributes      
 		private StateType state_ = new StateType();
 		private StateType previousState_ = new StateType();
 		private bool mightHaveChanges = false;
@@ -19,7 +19,7 @@ namespace MicroState
 		public bool PullChanges = false;
 		public bool PushChanges = false;
 		#endregion
-
+      
 
 		#region Events
 		public class UpdatesEvent : UnityEvent<StateType, StateType> { }
@@ -29,6 +29,10 @@ namespace MicroState
 
 		void Awake()
         {
+			if (state_ == null) state_ = new StateType();
+			if (previousState_ == null) previousState_ = new StateType();
+			if (UpdateEvent == null) UpdateEvent = new UpdatesEvent();
+
 			state_.ChangeEvent.AddListener(this.OnStateChange);
 
 			if (PushChanges) {
