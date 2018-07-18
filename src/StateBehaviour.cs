@@ -8,10 +8,12 @@ namespace MicroState
 		#region Private attributes      
 		private StateType state_ = new StateType();
 		private StateType previousState_ = new StateType();
+#if UNITY_EDITOR
 		private bool mightHaveChanges = false;
-		#endregion
+#endif
+        #endregion
 
-      
+
 		public StateType State { get { return state_; } }
       
       
@@ -19,7 +21,7 @@ namespace MicroState
 		public bool PullChanges = false;
 		public bool PushChanges = false;
 		#endregion
-      
+
 
 		#region Events
 		public class UpdatesEvent : UnityEvent<StateType, StateType> { }
@@ -34,12 +36,12 @@ namespace MicroState
 			if (UpdateEvent == null) UpdateEvent = new UpdatesEvent();
 
 			state_.ChangeEvent.AddListener(this.OnStateChange);
-
+         
 			if (PushChanges) {
 				StateType editorState = this.GetEditorState();
 				this.state_.TakeContentFrom(editorState);
 			}
-         
+
 			if (PullChanges) Pull(this.state_);
         }
 
