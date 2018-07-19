@@ -7,15 +7,19 @@ namespace MicroState
 	{
 		#region Private attributes      
 		private StateType state_ = new StateType();
-		private StateType previousState_ = new StateType();
+		private MicroState.StateHandler<StateType> stateHandler_ = null;
+
 #if UNITY_EDITOR
 		private bool mightHaveChanges = false;
 #endif
         #endregion
 
-
 		public StateType State { get { return state_; } }
-      
+
+		public StateHandler<StateType> StateHandler { get {
+			if (stateHandler_ == null) stateHandler_ = new StateHandler<StateType>(state_);
+			return stateHandler_;
+		}}
       
 		#region Configurable Attributes      
 		public bool PullChanges = false;
@@ -24,16 +28,13 @@ namespace MicroState
 
 
 		#region Events
-		public class UpdatesEvent : UnityEvent<StateType, StateType> { }
         public UnityEvent ChangeEvent;
-        public UpdatesEvent UpdateEvent = new UpdatesEvent();
 		#endregion
 
 		void Awake()
         {
-			if (state_ == null) state_ = new StateType();
-			if (previousState_ == null) previousState_ = new StateType();
-			if (UpdateEvent == null) UpdateEvent = new UpdatesEvent();
+			if (state_ == null) state_ = new StateType();         
+
 
 			state_.ChangeEvent.AddListener(this.OnStateChange);
          
@@ -49,8 +50,6 @@ namespace MicroState
 		{
 			if (PullChanges) Pull(this.state_);
 			this.ChangeEvent.Invoke();
-			this.UpdateEvent.Invoke(previousState_, this.state_);
-			previousState_.TakeContentFrom(this.state_);
 		}
 
 #if UNITY_EDITOR
@@ -89,6 +88,6 @@ namespace MicroState
 			var state = new StateType();
 			this.Push(state);
 			return state;
-		}
+		}      
 	}
 }
