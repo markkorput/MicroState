@@ -22,6 +22,17 @@ namespace MicroState
 			item.ChangeEvent.AddListener(this.NotifyChange);
 		}
 
+		public void Assign(int idx, T item) {
+			if (this.Value[idx] != item) {
+				// remove existing
+				if (this.Value[idx] != null) this.Value[idx].ChangeEvent.RemoveListener(this.NotifyChange);
+                // insert new
+				this.Value[idx] = item;
+                // register to its change event
+				this.ChangeEvent.Invoke();
+			}
+		}
+
 		public void Remove(T item)
 		{
 			for (int i = this.Value.Length - 1; i >= 0; i--) {
