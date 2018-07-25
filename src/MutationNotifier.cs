@@ -8,25 +8,32 @@ namespace MicroState
 		public UnityEvent ChangeEvent = new UnityEvent();
       
 		private int postPonersCount = 0;
-        private bool bHasPostponedNotifications = false;
+        private bool bHasNotifications = false;
 
         public void BatchUpdate(System.Action func)
         {
             postPonersCount += 1;
             func.Invoke();
             postPonersCount -= 1;
-            if (bHasPostponedNotifications) this.NotifyChange();
+            if (bHasNotifications) this.NotifyChange();
         }
       
 		protected void NotifyChange()
         {
-            if (postPonersCount > 0)
-            {
-                bHasPostponedNotifications = true;
-                return;
-            }
+			bHasNotifications = true;
+			if (postPonersCount > 0) return;
 
-            ChangeEvent.Invoke();
+			while (bHasNotifications)
+			{
+				// clear has notifications flag
+				bHasNotifications = false;
+                // avoid ChangeEvent being triggered while executing ChangeEvent callbacks
+				postPonersCount += 1;
+				// run change event listeners; the might trigger new changes and set bHasNotications back to true
+				ChangeEvent.Invoke();
+                // stop our change event block
+				postPonersCount -= 1;
+			}
         }
     }
 }
