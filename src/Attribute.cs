@@ -6,6 +6,11 @@ namespace MicroState
     {
         void CopyFrom(ICopyableAttribute other);
     }
+
+    public interface IValueTypeProvider
+	{
+		Type GetValueType();
+	}
    
     /// <summary>
     /// The Attribute class wraps around a single value of any given type and
@@ -13,7 +18,7 @@ namespace MicroState
 	/// 
 	/// Mostly used inthe MicroState.State class.
     /// </summary>
-    public class Attribute<T> : MutationNotifier, ICopyableAttribute
+	public class Attribute<T> : MutationNotifier, ICopyableAttribute, IValueTypeProvider
     {
         private T value_;
 
@@ -43,5 +48,9 @@ namespace MicroState
         {
             this.Value = (other as Attribute<T>).Value;
         }
+      
+		public Type GetValueType() {
+			return typeof(T);
+		}
     }
 }

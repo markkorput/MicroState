@@ -7,10 +7,14 @@ namespace MicroState
 	public class State : MutationNotifier
 	{
 		private List<ICopyableAttribute> copyableAttributes = new List<ICopyableAttribute>();
+		// TODO; have public accessor return a clone
+
+		public List<IValueTypeProvider> ValueTypeProviders = new List<MicroState.IValueTypeProvider>();
 
 		protected  Attribute<T> CreateAttribute<T>() {
 			var attr = new Attribute<T>(this.NotifyChange);
 			this.copyableAttributes.Add(attr);
+			this.ValueTypeProviders.Add(attr);
 			return attr;
 		}
       
@@ -18,6 +22,7 @@ namespace MicroState
         {
             var attr = new Attribute<T>(val, this.NotifyChange);
             this.copyableAttributes.Add(attr);
+			this.ValueTypeProviders.Add(attr);
             return attr;
         }
 
@@ -25,6 +30,7 @@ namespace MicroState
         {
 			var attr = content != null ? new ListAttribute<T>(content, this.NotifyChange) : new ListAttribute<T>(this.NotifyChange);
             this.copyableAttributes.Add(attr);
+			this.ValueTypeProviders.Add(attr);
             return attr;
         }
 

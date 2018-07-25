@@ -11,6 +11,8 @@ namespace MicroState
 
 #if UNITY_EDITOR
 		private bool mightHaveChanges = false;
+		protected bool isPushing = false;
+		protected bool isPulling = false;
 #endif
         #endregion
 
@@ -37,7 +39,7 @@ namespace MicroState
 
 
 			state_.ChangeEvent.AddListener(this.OnStateChange);
-         
+
 			if (PushChanges) {
 				StateType editorState = this.GetEditorState();
 				this.state_.TakeContentFrom(editorState);
@@ -45,10 +47,15 @@ namespace MicroState
 
 			if (PullChanges) Pull(this.state_);
         }
-
+      
 		private void OnStateChange()
 		{
-			if (PullChanges) Pull(this.state_);
+			if (PullChanges && !isPushing)
+			{
+				isPulling = true;
+				Pull(this.state_);
+				isPulling = false;
+			}
 			this.ChangeEvent.Invoke();
 		}
 
@@ -57,18 +64,25 @@ namespace MicroState
         {
             if (PushChanges && mightHaveChanges)
             {
+				isPushing = true;
 				mightHaveChanges = false;
 				// get a state instance with the value in our editorput our editor attributes into a state instance
 				StateType editorState = this.GetEditorState();
-				state_.TakeContentFrom(editorState);            
+				state_.TakeContentFrom(editorState);
+				isPushing = false;
             }
         }
 
 		void OnValidate()
         {
-			this.mightHaveChanges = true;
+			this.SetDirty();
+
         }
 #endif
+      
+		protected void SetDirty() {
+			this.mightHaveChanges = true;
+		}
 
 		/// <summary>
         /// Method should pull content from our state_ into our public properties
