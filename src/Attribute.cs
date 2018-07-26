@@ -1,5 +1,5 @@
 ﻿using System;
-
+using UnityEngine;
 namespace MicroState
 {
 	public interface ICopyableAttribute
@@ -21,13 +21,13 @@ namespace MicroState
 	public class Attribute<T> : MutationNotifier, ICopyableAttribute, IValueTypeProvider
     {
         private T value_;
-
+      
         public T Value
         {
             get { return value_; }
             set
             {
-				bool change = ((value_ == null && value != null) || !value_.Equals(value));
+				bool change = !this.AreEqual(value_, value);
                 value_ = value;
 				if (change) this.NotifyChange();
             }
@@ -38,10 +38,9 @@ namespace MicroState
 			this.ChangeEvent.AddListener(changeFunc);
         }
 
-		public Attribute(T val, UnityEngine.Events.UnityAction changeFunc)
+		public Attribute(T val, UnityEngine.Events.UnityAction changeFunc) : this(changeFunc)
         {
             this.value_ = val;
-			this.ChangeEvent.AddListener(changeFunc);
         }
 
         public void CopyFrom(ICopyableAttribute other)
@@ -51,6 +50,19 @@ namespace MicroState
       
 		public Type GetValueType() {
 			return typeof(T);
+		}
+
+		private bool AreEqual(T a, T b) {
+			if (Nullable.GetUnderlyingType(typeof(T)) != null && (a == null || b == null)) {
+				// if a == null we cannot a a.Equals
+				return a == null && b == null;
+			}
+
+			if (typeof(T) == typeof(string) && (a == null || b == null)) {
+				return a == null && b == null;
+			}
+
+			return a.Equals(b);
 		}
     }
 }

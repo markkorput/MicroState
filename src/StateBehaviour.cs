@@ -3,62 +3,39 @@ using UnityEngine.Events;
 
 namespace MicroState
 {
-	public class StateBehaviour<StateType> : MonoBehaviour where StateType : MicroState.State, new()
+	// NOT YET, only way to have a pre-initialized state [System.Obsolete("Use MicroState.StateInstance and MicroState.Editor Instead")]
+	public class StateBehaviour<StateType> : StateInstance<StateType> where StateType : MicroState.State, new()
 	{
-		#region Private attributes      
-		private StateType state_ = new StateType();
-		private MicroState.StateHandler<StateType> stateHandler_ = null;
-
+     
 #if UNITY_EDITOR
 		private bool mightHaveChanges = false;
 		protected bool isPushing = false;
 		protected bool isPulling = false;
 #endif
-        #endregion
-
-		public StateType State { get { return state_; } }
-
-		public StateHandler<StateType> StateHandler { get {
-			if (stateHandler_ == null) stateHandler_ = new StateHandler<StateType>(state_);
-			return stateHandler_;
-		}}
       
-		#region Configurable Attributes      
-		public bool PullChanges = false;
-		public bool PushChanges = false;
-		#endregion
-
-
-		#region Events
-        public UnityEvent ChangeEvent;
-		#endregion
-
 		void Awake()
         {
-			if (state_ == null) state_ = new StateType();         
-
-
-			state_.ChangeEvent.AddListener(this.OnStateChange);
-
+            // base.Awake();
+			this.State.ChangeEvent.AddListener(this.OnStateChange);
+         
 			if (PushChanges) {
 				StateType editorState = this.GetEditorState();
-				this.state_.TakeContentFrom(editorState);
+				this.State.TakeContentFrom(editorState);
 			}
 
-			if (PullChanges) Pull(this.state_);
+			if (PullChanges) Pull(this.State);
         }
-      
+
 		private void OnStateChange()
 		{
 			if (PullChanges && !isPushing)
 			{
 				isPulling = true;
-				Pull(this.state_);
+				Pull(this.State);
 				isPulling = false;
 			}
-			this.ChangeEvent.Invoke();
 		}
-
+      
 #if UNITY_EDITOR
         private void Update()
         {
@@ -68,7 +45,7 @@ namespace MicroState
 				mightHaveChanges = false;
 				// get a state instance with the value in our editorput our editor attributes into a state instance
 				StateType editorState = this.GetEditorState();
-				state_.TakeContentFrom(editorState);
+				State.TakeContentFrom(editorState);
 				isPushing = false;
             }
         }
@@ -83,7 +60,7 @@ namespace MicroState
 		protected void SetDirty() {
 			this.mightHaveChanges = true;
 		}
-
+      
 		/// <summary>
         /// Method should pull content from our state_ into our public properties
         /// </summary>
@@ -97,7 +74,7 @@ namespace MicroState
 		protected virtual void Push(StateType state) {
             // virtual
 		}
-      
+
 		protected StateType GetEditorState() {
 			var state = new StateType();
 			this.Push(state);

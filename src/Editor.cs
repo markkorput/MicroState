@@ -1,28 +1,108 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 namespace MicroState
 {
-	public class Editor<StateType> : UnityEditor.Editor where StateType : MicroState.State, new()
-    {
-        void OnEnable()
-        {
-            if (this.target != null)
-            {
-                var t = (EditableStateBehaviour<StateType>)this.target;
-				t.EditorState.ChangeEvent.AddListener(this.TriggerGuiUpdate);
-            }
-        }
+public class Editor<StateType> : UnityEditor.Editor where StateType : MicroState.State, new()
+	{
+		private StateType editorState_ = new StateType();
+		protected StateType EditorState { get { return editorState_; } }
 
-        public override void OnInspectorGUI()
-        {
-            var t = (EditableStateBehaviour<StateType>)this.target;
-			t.OnInspectorGUI();
-        }
+		private int activePushes = 0;
+		private int activePulls = 0;
 
-		private void TriggerGuiUpdate() {
+		void OnEnable()
+		{
+			var t = (StateInstance<StateType>)this.target;
+
+			// Push changes from our EditorState to our Target's State
+			this.EditorState.ChangeEvent.AddListener(() =>
+			{
+				if (t.PushChanges && activePushes == 0 && activePulls == 0)
+				{
+					activePushes += 1;
+					t.State.TakeContentFrom(this.EditorState);
+					activePushes -= 1;
+				}
+			});
+
+			// Pull changes from our Target's State to our EditorState
+			t.State.ChangeEvent.AddListener(() =>
+			{
+				if (t.PullChanges && activePushes == 0 && activePulls == 0)
+				{
+					activePulls += 1;
+					this.EditorState.TakeContentFrom(t.State);
+					activePulls -= 1;
+				}
+			});
+
+			// Whenever our EditorState changes, make sure the Editor GUI is updated
+			this.EditorState.ChangeEvent.AddListener(this.TriggerGuiUpdate);
+		}
+
+		void OnDisable()
+		{
+			this.EditorState.ChangeEvent.RemoveListener(this.TriggerGuiUpdate);
+		}
+
+		public override void OnInspectorGUI()
+		{
+			var t = (StateInstance<StateType>)this.target;
+
+			// TODO; make this configurable?
+			t.PullChanges = EditorGUILayout.Toggle("Pull", t.PullChanges);
+			t.PushChanges = EditorGUILayout.Toggle("Push", t.PushChanges);
+
+			this.Fields();
+		}
+
+		private void TriggerGuiUpdate()
+		{
 			EditorUtility.SetDirty(this.target);
 		}
-    }
-}         
+
+
+		protected virtual void Fields() { }
+
+		protected void AddField(string label, MicroState.Attribute<string> attr)
+		{
+#if UNITY_EDITOR
+            attr.Value = EditorGUILayout.TextField(label, attr.Value);
+#endif
+		}
+
+		protected void AddField(string label, MicroState.Attribute<int> attr)
+		{
+#if UNITY_EDITOR
+    		attr.Value = EditorGUILayout.IntField(label, attr.Value);
+#endif
+		}
+
+		protected void AddField(string label, MicroState.Attribute<float> attr)
+		{
+#if UNITY_EDITOR
+    		attr.Value = EditorGUILayout.FloatField(label, attr.Value);
+#endif
+		}
+
+		protected void AddField(string label, MicroState.Attribute<bool> attr)
+		{
+#if UNITY_EDITOR
+            attr.Value = EditorGUILayout.Toggle(label, attr.Value);
+#endif
+		}
+
+		protected void AddField(System.Action func)
+		{
+#if UNITY_EDITOR
+			func.Invoke();
+#endif
+		}
+	}
+}

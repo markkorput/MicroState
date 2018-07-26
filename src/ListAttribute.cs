@@ -11,13 +11,13 @@ namespace MicroState
 		public ListAttribute(T[] content, UnityEngine.Events.UnityAction changeFunc) : base(content, changeFunc)      
         {
         }
-      
+
 		public void Add(T item) {
 			T[] newlist = new T[Value.Length + 1];
 			for (int i = 0; i < Value.Length; i++) newlist[i] = Value[i];
 			newlist[Value.Length] = item;
 			this.Value = newlist;
-
+         
             // whenever the new item invokes its change event, we'll notify our owner
 			item.ChangeEvent.AddListener(this.NotifyChange);
 		}
@@ -32,7 +32,7 @@ namespace MicroState
 				this.ChangeEvent.Invoke();
 			}
 		}
-
+      
 		public void Remove(T item)
 		{
 			for (int i = this.Value.Length - 1; i >= 0; i--) {
@@ -42,7 +42,7 @@ namespace MicroState
 				}
 			}
 		}
-      
+
 		public void Remove(int idx) {
 			// create copy of array without the specified item
 			T[] newlist = new T[this.Value.Length - 1];
