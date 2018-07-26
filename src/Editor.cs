@@ -16,6 +16,8 @@ public class Editor<StateType> : UnityEditor.Editor where StateType : MicroState
 		private int activePushes = 0;
 		private int activePulls = 0;
 
+		private List<SerializeField> SerializeFields = null;
+
 		void OnEnable()
 		{
 			var t = (StateInstance<StateType>)this.target;
@@ -58,7 +60,7 @@ public class Editor<StateType> : UnityEditor.Editor where StateType : MicroState
 			// TODO; make this configurable?
 			t.PullChanges = EditorGUILayout.Toggle("Pull", t.PullChanges);
 			t.PushChanges = EditorGUILayout.Toggle("Push", t.PushChanges);
-
+         
 			this.Fields();
 		}
 

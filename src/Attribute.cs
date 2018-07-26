@@ -7,18 +7,13 @@ namespace MicroState
         void CopyFrom(ICopyableAttribute other);
     }
 
-    public interface IValueTypeProvider
-	{
-		Type GetValueType();
-	}
-   
     /// <summary>
     /// The Attribute class wraps around a single value of any given type and
 	/// invokes the changeFunc provided at instantiation whenever its value changes.
 	/// 
 	/// Mostly used inthe MicroState.State class.
     /// </summary>
-	public class Attribute<T> : MutationNotifier, ICopyableAttribute, IValueTypeProvider
+	public class Attribute<T> : MutationNotifier, ICopyableAttribute
     {
         private T value_;
       
@@ -47,10 +42,6 @@ namespace MicroState
         {
             this.Value = (other as Attribute<T>).Value;
         }
-      
-		public Type GetValueType() {
-			return typeof(T);
-		}
 
 		private bool AreEqual(T a, T b) {
 			if (Nullable.GetUnderlyingType(typeof(T)) != null && (a == null || b == null)) {

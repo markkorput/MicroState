@@ -25,7 +25,7 @@ namespace MicroState
 
 			if (PullChanges) Pull(this.State);
         }
-
+      
 		private void OnStateChange()
 		{
 			if (PullChanges && !isPushing)
@@ -35,7 +35,7 @@ namespace MicroState
 				isPulling = false;
 			}
 		}
-      
+
 #if UNITY_EDITOR
         private void Update()
         {
