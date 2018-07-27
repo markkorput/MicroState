@@ -20,8 +20,6 @@ namespace MicroState
 		private int activePushes = 0;
 		private int activePulls = 0;
 
-		private List<SerializeField> SerializeFields = null;
-
 		void OnEnable()
 		{
 #if UNITY_EDITOR
