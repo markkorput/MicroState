@@ -21,14 +21,21 @@ namespace MicroState
             this.copyableAttributes.Add(attr);
             return attr;
         }
-
-		protected ListAttribute<T> CreateListAttribute<T>(T[] content = null) where T : State
+      
+		protected ListAttribute<T> CreateListAttribute<T>(T[] content = null) where T : State, new()
         {
-			var attr = content != null ? new ListAttribute<T>(content, this.NotifyChange) : new ListAttribute<T>(this.NotifyChange);
+			var attr = content != null ? new ListAttribute<T>(content, this.NotifyChange)
+			 : new ListAttribute<T>(this.NotifyChange);
             this.copyableAttributes.Add(attr);
             return attr;
         }
-
+      
+		public T Clone<T>() where T : State, new() {
+			T clone = new T();
+			clone.TakeContentFrom(this);
+			return clone;
+		}
+      
         /// <summary>
 		/// Default copy behaviour; have each instance in our copyableAttributes
 		/// list copy from each instance in the other state's copyableAttributes
@@ -39,7 +46,7 @@ namespace MicroState
 				Debug.Log("[MicroState.State.TakeContentFrom] source state has different number o copyableAttributes");
 				return;
 			}
-         
+
 			this.BatchUpdate(() =>
 			{
 				for (int i = 0; i < copyableAttributes.Count; i += 1)

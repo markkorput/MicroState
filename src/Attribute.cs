@@ -17,7 +17,7 @@ namespace MicroState
     {
         private T value_;
       
-        public T Value
+        virtual public T Value
         {
             get { return value_; }
             set
@@ -38,7 +38,7 @@ namespace MicroState
             this.value_ = val;
         }
 
-        public void CopyFrom(ICopyableAttribute other)
+        virtual public void CopyFrom(ICopyableAttribute other)
         {
             this.Value = (other as Attribute<T>).Value;
         }
@@ -53,6 +53,9 @@ namespace MicroState
 				return a == null && b == null;
 			}
 
+			if (a == null || b == null) {
+				return a == null && b == null;
+			}
 			return a.Equals(b);
 		}
     }

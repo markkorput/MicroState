@@ -20,7 +20,7 @@ namespace MicroState
                 return stateHandler_;
             }
         }
-      
+
         #region Configurable Attributes      
         [Header("State Behaviour")]
         public bool PullChanges = false;

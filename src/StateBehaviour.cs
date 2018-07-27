@@ -6,7 +6,9 @@ namespace MicroState
 	// NOT YET, only way to have a pre-initialized state [System.Obsolete("Use MicroState.StateInstance and MicroState.Editor Instead")]
 	public class StateBehaviour<StateType> : StateInstance<StateType> where StateType : MicroState.State, new()
 	{
-		
+		public bool PushAtAwake = true;
+		public bool PushAtStart = false;
+
 #if UNITY_EDITOR
 		private bool mightHaveChanges = false;
 #endif
@@ -14,16 +16,24 @@ namespace MicroState
 		protected bool isPulling = false;
 
 
+		private void Awake()
+		{
+			if (PushAtAwake) {
+				StateType editorState = this.GetEditorState();
+                this.State.TakeContentFrom(editorState);            
+			}
+		}
+      
 		void Start()
         {
 			this.State.ChangeEvent.AddListener(this.OnStateChange);
-
-			if (PushChanges) {
+         
+			if (PushAtStart) {
 				StateType editorState = this.GetEditorState();
 				this.State.TakeContentFrom(editorState);
 			}
-
-			 if (PullChanges) Pull(this.State);
+         
+		    if (PullChanges) Pull(this.State);
         }
       
 		private void OnStateChange()
