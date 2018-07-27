@@ -86,7 +86,7 @@ namespace MyProject.MyComponent {
     void Start () {
       // register listener for whenever the State changes. The UpdateEvent provides
       // 2 arguments; the previous state and the new (current) state
-      ComponentState.UpdateEvent.AddListener(this.OnStateUpdate);
+      ComponentState.StateHandler.Add(this.OnStateUpdate);
     }
 
     private void OnStateUpdate(State previous, State current) {
