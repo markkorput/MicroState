@@ -6,24 +6,23 @@ namespace MicroState
 	// NOT YET, only way to have a pre-initialized state [System.Obsolete("Use MicroState.StateInstance and MicroState.Editor Instead")]
 	public class StateBehaviour<StateType> : StateInstance<StateType> where StateType : MicroState.State, new()
 	{
-     
+		
 #if UNITY_EDITOR
 		private bool mightHaveChanges = false;
 		protected bool isPushing = false;
 		protected bool isPulling = false;
 #endif
       
-		void Awake()
+		void Start()
         {
-            // base.Awake();
 			this.State.ChangeEvent.AddListener(this.OnStateChange);
-         
+
 			if (PushChanges) {
 				StateType editorState = this.GetEditorState();
 				this.State.TakeContentFrom(editorState);
 			}
 
-			if (PullChanges) Pull(this.State);
+			 if (PullChanges) Pull(this.State);
         }
       
 		private void OnStateChange()
@@ -35,11 +34,11 @@ namespace MicroState
 				isPulling = false;
 			}
 		}
-
+      
 #if UNITY_EDITOR
         private void Update()
         {
-            if (PushChanges && mightHaveChanges)
+            if (PushChanges && mightHaveChanges && !isPulling)
             {
 				isPushing = true;
 				mightHaveChanges = false;
@@ -53,14 +52,13 @@ namespace MicroState
 		void OnValidate()
         {
 			this.SetDirty();
-
         }
 #endif
       
 		protected void SetDirty() {
 			this.mightHaveChanges = true;
 		}
-      
+
 		/// <summary>
         /// Method should pull content from our state_ into our public properties
         /// </summary>
@@ -74,7 +72,7 @@ namespace MicroState
 		protected virtual void Push(StateType state) {
             // virtual
 		}
-
+      
 		protected StateType GetEditorState() {
 			var state = new StateType();
 			this.Push(state);

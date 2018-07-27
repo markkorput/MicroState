@@ -9,7 +9,7 @@ namespace MicroState
         private StateType state_ = new StateType();
         private MicroState.StateHandler<StateType> stateHandler_ = null;
         #endregion
-      
+
         public StateType State { get { return state_; } }
 
         public StateHandler<StateType> StateHandler
@@ -22,6 +22,7 @@ namespace MicroState
         }
       
         #region Configurable Attributes      
+        [Header("State Behaviour")]
         public bool PullChanges = false;
         public bool PushChanges = false;
         #endregion

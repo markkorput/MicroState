@@ -39,7 +39,7 @@ namespace MicroState
 				Debug.Log("[MicroState.State.TakeContentFrom] source state has different number o copyableAttributes");
 				return;
 			}
-
+         
 			this.BatchUpdate(() =>
 			{
 				for (int i = 0; i < copyableAttributes.Count; i += 1)
