@@ -8,7 +8,11 @@ using UnityEditor;
 
 namespace MicroState
 {
-public class Editor<StateType> : UnityEditor.Editor where StateType : MicroState.State, new()
+#if UNITY_EDITOR
+	public class Editor<StateType> : UnityEditor.Editor where StateType : MicroState.State, new()
+#else
+	public class Editor<StateType> where StateType : MicroState.State, new()
+#endif
 	{
 		private StateType editorState_ = new StateType();
 		protected StateType EditorState { get { return editorState_; } }
@@ -20,8 +24,9 @@ public class Editor<StateType> : UnityEditor.Editor where StateType : MicroState
 
 		void OnEnable()
 		{
+#if UNITY_EDITOR
 			var t = (StateInstance<StateType>)this.target;
-
+            
 			// Push changes from our EditorState to our Target's State
 			this.EditorState.ChangeEvent.AddListener(() =>
 			{
@@ -46,6 +51,7 @@ public class Editor<StateType> : UnityEditor.Editor where StateType : MicroState
 
 			// Whenever our EditorState changes, make sure the Editor GUI is updated
 			this.EditorState.ChangeEvent.AddListener(this.TriggerGuiUpdate);
+#endif
 		}
 
 		void OnDisable()
@@ -53,20 +59,29 @@ public class Editor<StateType> : UnityEditor.Editor where StateType : MicroState
 			this.EditorState.ChangeEvent.RemoveListener(this.TriggerGuiUpdate);
 		}
 
+#if UNITY_EDITOR
 		public override void OnInspectorGUI()
+#else
+		public void OnInspectorGUI()
+#endif
+
 		{
+#if UNITY_EDITOR
 			var t = (StateInstance<StateType>)this.target;
 
 			// TODO; make this configurable?
 			t.PullChanges = EditorGUILayout.Toggle("Pull", t.PullChanges);
 			t.PushChanges = EditorGUILayout.Toggle("Push", t.PushChanges);
-         
+
 			this.Fields();
+#endif
 		}
 
 		private void TriggerGuiUpdate()
 		{
+#if UNITY_EDITOR
 			EditorUtility.SetDirty(this.target);
+#endif
 		}
 
 

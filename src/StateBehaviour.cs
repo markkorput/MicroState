@@ -9,10 +9,11 @@ namespace MicroState
 		
 #if UNITY_EDITOR
 		private bool mightHaveChanges = false;
+#endif
 		protected bool isPushing = false;
 		protected bool isPulling = false;
-#endif
-      
+
+
 		void Start()
         {
 			this.State.ChangeEvent.AddListener(this.OnStateChange);
@@ -54,9 +55,12 @@ namespace MicroState
 			this.SetDirty();
         }
 #endif
-      
-		protected void SetDirty() {
+
+		protected void SetDirty()
+		{
+#if UNITY_EDITOR
 			this.mightHaveChanges = true;
+#endif
 		}
 
 		/// <summary>
