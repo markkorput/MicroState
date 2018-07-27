@@ -44,15 +44,15 @@ namespace MicroState
         }
 
 		private bool AreEqual(T a, T b) {
-			if (Nullable.GetUnderlyingType(typeof(T)) != null && (a == null || b == null)) {
-				// if a == null we cannot a a.Equals
-				return a == null && b == null;
-			}
+			//if (Nullable.GetUnderlyingType(typeof(T)) != null && (a == null || b == null)) {
+			//	// if a == null we cannot a a.Equals
+			//	return a == null && b == null;
+			//}
 
-			if (typeof(T) == typeof(string) && (a == null || b == null)) {
-				return a == null && b == null;
-			}
-
+			//if (typeof(T) == typeof(string) && (a == null || b == null)) {
+			//	return a == null && b == null;
+			//}
+         
 			if (a == null || b == null) {
 				return a == null && b == null;
 			}
