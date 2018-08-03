@@ -18,9 +18,9 @@ namespace MicroState
 			set {
 				this.BatchUpdate(() =>
 				{
-					foreach (var it in base.Value) it.ChangeEvent.RemoveListener(this.LocalNotify);               
+					foreach (var it in base.Value) if (it != null) it.ChangeEvent.RemoveListener(this.LocalNotify);               
 					base.Value = value;
-					foreach (var it in base.Value) it.ChangeEvent.AddListener(this.LocalNotify);
+					foreach (var it in base.Value) if (it != null) it.ChangeEvent.AddListener(this.LocalNotify);
 				});
 			}
 		}
@@ -34,7 +34,7 @@ namespace MicroState
 			for (int i = 0; i < Value.Length; i++) newlist[i] = Value[i];
 			newlist[Value.Length] = item;
 			// whenever the new item invokes its change event, we'll notify our owner
-			item.ChangeEvent.AddListener(this.LocalNotify);
+			if (item != null) item.ChangeEvent.AddListener(this.LocalNotify);
 			this.Value = newlist;
 		}
 
@@ -45,7 +45,7 @@ namespace MicroState
                 // insert new
 				this.Value[idx] = item;
 				// register to its change event
-				item.ChangeEvent.AddListener(this.LocalNotify);
+				if (item != null) item.ChangeEvent.AddListener(this.LocalNotify);
 				this.LocalNotify();
 			}
 		}
@@ -61,6 +61,9 @@ namespace MicroState
 		}
 
 		public void Remove(int idx) {
+			T item = this.Value[idx];
+			if (item != null) item.ChangeEvent.RemoveListener(this.LocalNotify);
+
 			// create copy of array without the specified item
 			T[] newlist = new T[this.Value.Length - 1];
 			for (int i = 0; i < idx; i++) newlist[i] = this.Value[i];
@@ -82,7 +85,7 @@ namespace MicroState
 			{            
 			    List<T> list = new List<T>();
 				foreach (var it in (other as ListAttribute<T>).Value) {
-					list.Add(it.Clone<T>());
+					list.Add(it == null ? null : it.Clone<T>());
 				}
             
 				this.Value = list.ToArray();
