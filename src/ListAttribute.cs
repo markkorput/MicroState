@@ -49,7 +49,7 @@ namespace MicroState
 				this.LocalNotify();
 			}
 		}
-
+      
 		public void Remove(T item)
 		{
 			for (int i = this.Value.Length - 1; i >= 0; i--) {
@@ -71,21 +71,21 @@ namespace MicroState
             // make new copy our value
 			this.Value = newlist;
 		}
-      
+
 		public void Clear() {
 			this.BatchUpdate(() =>
 			{
 				while (this.Value.Length > 0) this.Remove(0);
 			});
 		}
-
+      
 		override public void CopyFrom(ICopyableAttribute other)
 		{
 			this.BatchUpdate(() =>
 			{            
 			    List<T> list = new List<T>();
 				foreach (var it in (other as ListAttribute<T>).Value) {
-					list.Add(it == null ? null : it.Clone<T>());
+					list.Add(it == null ? null : (T)it.Clone());
 				}
             
 				this.Value = list.ToArray();

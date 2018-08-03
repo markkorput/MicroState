@@ -13,7 +13,7 @@ namespace MicroState
       
 		private class UpdateEvent : UnityEvent<StateType, StateType> { }
         private UpdateEvent Event = new UpdateEvent();
-        
+
 		public bool IsDirty { get { return this.isDirty; }}
       
 		public StateHandler(StateType state)
@@ -23,6 +23,8 @@ namespace MicroState
         }
 
 		public void Dispose() {
+			this.Event.RemoveAllListeners();
+         
 			if (this.MasterState != null) {
 				this.MasterState.ChangeEvent.RemoveListener(this.OnMasterStateChange);
 			}
@@ -41,7 +43,5 @@ namespace MicroState
 			Event.Invoke(this.PreviousState, this.MasterState);
 			this.PreviousState.TakeContentFrom(this.MasterState);
 		}
-
-        
     }
 }

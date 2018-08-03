@@ -35,6 +35,10 @@ namespace MicroState
 			clone.TakeContentFrom(this);
 			return clone;
 		}
+
+		public virtual State Clone() {
+			return this.Clone<State>();
+		}
       
         /// <summary>
 		/// Default copy behaviour; have each instance in our copyableAttributes
@@ -43,7 +47,7 @@ namespace MicroState
         /// <param name="state">State.</param>
 		public virtual void TakeContentFrom(State state){
 			if (state.copyableAttributes.Count != this.copyableAttributes.Count) {
-				Debug.Log("[MicroState.State.TakeContentFrom] source state has different number o copyableAttributes");
+				Debug.Log("[MicroState.State.TakeContentFrom] source state has different number of copyableAttributes");
 				return;
 			}
 
