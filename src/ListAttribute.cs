@@ -28,6 +28,8 @@ namespace MicroState
 		private void LocalNotify() {
 			this.NotifyChange();         
 		}
+
+		public int Length { get { return this.Value == null ? 0 : this.Value.Length; }}
       
 		public void Add(T item) {
 			T[] newlist = new T[Value.Length + 1];
