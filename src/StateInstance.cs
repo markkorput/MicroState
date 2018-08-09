@@ -26,5 +26,9 @@ namespace MicroState
         public bool PullChanges = false;
         public bool PushChanges = false;
         #endregion
+
+		public static StateInstance<StateType> For(GameObject go) {
+			return go.GetComponentInParent<StateInstance<StateType>>();
+		}
     }
 }
