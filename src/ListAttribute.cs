@@ -57,7 +57,7 @@ namespace MicroState
 			for (int i = this.Value.Length - 1; i >= 0; i--) {
 				if (this.Value[i] == item)
 				{
-					Remove(item);
+					Remove(i);
 				}
 			}
 		}
