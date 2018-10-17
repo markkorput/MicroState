@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace MicroState {
 	public class Subscription : System.IDisposable
@@ -31,12 +32,21 @@ namespace MicroState {
          
             // invoke callback now
 			func.Invoke(instance.State);
-         
-            // return subscrition with unsubscribe logic
-			return new Subscription(() =>
-			{
-				instance.State.ChangeEvent.RemoveListener(action);
-			});
+
+			// return subscrition with unsubscribe logic
+			return new Subscription(() => instance.State.ChangeEvent.RemoveListener(action));
 		}
-    }   
+
+		public static Subscription Subscribe<StateType>(StateInstance<StateType> instance, GameObject go, UnityAction<StateType, StateType> func) where StateType : State, new()
+        {
+            // find default instance if instance == null
+            if (instance == null) instance = StateInstance<StateType>.For(go);
+
+			// subscribe
+			instance.StateHandler.Add(func);
+         
+			// return subscrition with unsubscribe logic
+			return new Subscription(() => instance.StateHandler.Remove(func));
+        }
+    }
 }
