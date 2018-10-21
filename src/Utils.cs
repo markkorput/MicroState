@@ -43,18 +43,18 @@ namespace MicroState {
          
             // invoke callback now
 			func.Invoke(instance.State);
-
+         
 			// return subscrition with unsubscribe logic
 			return new Subscription(() => instance.State.ChangeEvent.RemoveListener(action));
 		}
 
-		public static Subscription Subscribe<StateType>(StateInstance<StateType> instance, GameObject go, UnityAction<StateType, StateType> func) where StateType : State, new()
+		public static Subscription Subscribe<StateType>(StateInstance<StateType> instance, GameObject go, UnityAction<StateType, StateType> func, bool invokeDirectly = true) where StateType : State, new()
         {
             // find default instance if instance == null
             if (instance == null) instance = StateInstance<StateType>.For(go);
 
 			// subscribe
-			instance.StateHandler.Add(func);
+			instance.StateHandler.Add(func, invokeDirectly);
          
 			// return subscrition with unsubscribe logic
 			return new Subscription(() => instance.StateHandler.Remove(func));

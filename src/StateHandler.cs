@@ -30,9 +30,9 @@ namespace MicroState
 			}
 		}
 
-		public void Add(UnityAction<StateType,StateType> func) {
-			func.Invoke(FirstState, MasterState);
-			Event.AddListener(func);         
+		public void Add(UnityAction<StateType,StateType> func, bool invokeDirectly = true) {
+			if (invokeDirectly) func.Invoke(FirstState, MasterState);
+			Event.AddListener(func);
 		}
 
 		public void Remove(UnityAction<StateType, StateType> func) {
