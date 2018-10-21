@@ -17,9 +17,20 @@ namespace MicroState {
             this.disposeFunc.Invoke();
         }
     }
-   
+
 	public class Utils
-    {
+	{
+		public static bool With<StateType>(StateInstance<StateType> instance, GameObject go, System.Action<StateType> func) where StateType : State, new()
+        {
+			// find default instance if instance == null
+            if (instance == null) instance = StateInstance<StateType>.For(go);         
+			if (instance == null) return false;
+         
+            // invoke callback now
+            func.Invoke(instance.State);
+			return true;
+		}
+
 		public static Subscription Subscribe<StateType>(StateInstance<StateType> instance, GameObject go, System.Action<StateType> func) where StateType : State, new() {
             // find default instance if instance == null
 			if (instance == null) instance = StateInstance<StateType>.For(go);
