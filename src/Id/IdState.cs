@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace MicroState.Id
@@ -12,18 +13,28 @@ namespace MicroState.Id
 		{
 			this.Instance = instance;
 		}
-
+      
 		protected void CreateAttr<ValT>(string id,
 								 System.Func<StateT, ValT> getter,
 								 System.Action<StateT, ValT> setter)
 		{
-			AttrDefs.Add(new AttrDef<StateT, ValT>(id, getter, setter));
+			AttrDefs.Add(
+				new AttrDef<StateT, ValT>(
+					id,
+					getter,
+					setter,
+					() => this.GetAttr<ValT>(id)
+				));
 		}
-
+      
 		public Attr<StateT, ValT> GetAttr<ValT>(string id)
 		{
 			var def = AttrDefs.Find((attrdef) => attrdef.id.Equals(id));
 			return def == null ? null : new Attr<StateT, ValT>(this.Instance, (AttrDef<StateT, ValT>)def);
+		}
+
+		public BaseAttr[] GetAttributes() {
+			return (from it in this.AttrDefs select it.CreateAttr()).ToArray();
 		}
 	}
 }
