@@ -6,20 +6,28 @@ using System.Collections;
 
 namespace MicroState.Id
 {
-	public class IdStateInstanceEditor<DataT, IdStateT> : Editor where IdStateT : IdState<DataT>, new()
+	public class IdStateInstanceEditor<DataT, IdStateT, InstanceT> : Editor where IdStateT : IdState<DataT>, new() where InstanceT : IdStateInstance<DataT, IdStateT>
 	{
 		public override void OnInspectorGUI()
 		{
-			var stateInstance = (Id.IdStateInstance<DataT, IdStateT>)target;
+			var stateInstance = (InstanceT)target;
+
+			//var scriptobj = ScriptableObject.CreateInstance<DataT>();
+			//SerializedObject serializer= new UnityEditor.SerializedObject(scriptobj);         
          
 			var attrs = stateInstance.State.GetAttributes();
-         
-			foreach(var generic_attr in attrs) {            
+                    //var obj = ScriptableObject.CreateInstance<DataT>();
+			foreach(var generic_attr in attrs) {
 
 				// int?
+            
 				if( generic_attr.ValueType.Equals(((int)0).GetType()) ) {               
 					var attr = (Id.Attr<DataT, int>)generic_attr;
-					attr.Value = EditorGUILayout.IntField(attr.Id, attr.Value);
+					//var prop = serializer.FindProperty(attr.Id);
+               
+					//attr.Value = prop.intValue;
+ 					attr.Value = EditorGUILayout.IntField(attr.Id, attr.Value);
+					//prop.intValue = attr.Value;
 				}
 
 				// string?
@@ -57,8 +65,17 @@ namespace MicroState.Id
                 }
 			}
 
+			//serializer.ApplyModifiedProperties();
+
 			// Show default inspector property editor
 			DrawDefaultInspector();
+
+
+            
+   
+   
+            //SerializedProperty serializedPropertyMyInt = serializedObject.FindProperty("myInt");         
+            //Debug.Log("myInt " + serializedPropertyMyInt.intValue);
 		}
 	}
    

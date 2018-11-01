@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace MicroState.Id
 {
@@ -14,6 +15,10 @@ namespace MicroState.Id
 			this.Instance = instance;
 		}
       
+		public void setDataInstance(StateT inst) { this.Instance = inst; }
+
+		public StateT DataInstance { get { return Instance; }}
+
 		protected void CreateAttr<ValT>(string id,
 								 System.Func<StateT, ValT> getter,
 								 System.Action<StateT, ValT> setter)
@@ -26,7 +31,7 @@ namespace MicroState.Id
 					() => this.GetAttr<ValT>(id)
 				));
 		}
-      
+
 		public Attr<StateT, ValT> GetAttr<ValT>(string id)
 		{
 			var def = AttrDefs.Find((attrdef) => attrdef.id.Equals(id));
