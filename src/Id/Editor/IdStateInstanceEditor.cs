@@ -6,6 +6,7 @@ using System.Collections;
 
 namespace MicroState.Id
 {
+    /*
 	public class IdStateInstanceEditor<DataT, IdStateT, InstanceT> : Editor where IdStateT : IdState<DataT>, new() where InstanceT : IdStateInstance<DataT, IdStateT>
 	{
 		public override void OnInspectorGUI()
@@ -78,6 +79,6 @@ namespace MicroState.Id
             //Debug.Log("myInt " + serializedPropertyMyInt.intValue);
 		}
 	}
-   
-	// [CustomEditor(typeof(IdStateInstance<InstanceT>))]
+ */  
+
 }

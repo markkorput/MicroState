@@ -59,6 +59,28 @@ public class IdStateTests
 		Assert.AreEqual(state.GetAttr<string>("Name").ValueType, ((string)"").GetType());
 	}
 
+	[Test]
+	public void OnChange()
+	{
+		// general purpose class
+        var cl = new RandomClass();
+        // IdState
+        var state = new RandomClassState(cl);
+
+		int counter = 0;
+		state.OnChange += (s) => { counter += s.GetAttr<int>("Number").Value; };
+
+		state.GetAttr<int>("Number").Value = 1;
+		Assert.AreEqual(counter, 1);
+		state.GetAttr<string>("Name").Value = "a";
+		Assert.AreEqual(counter, 2);
+		state.GetAttr<string>("Name").Value = "b";
+		Assert.AreEqual(counter, 3);
+		state.GetAttr<int>("Number").Value = 10;
+		Assert.AreEqual(counter, 13);
+		state.GetAttr<int>("Number").Value = 10; // no change
+		Assert.AreEqual(counter, 13);
+	}
 
     //// A UnityTest behaves like a coroutine in PlayMode
     //// and allows you to yield null to skip a frame in EditMode

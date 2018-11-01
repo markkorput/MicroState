@@ -45,7 +45,7 @@ namespace MicroState.Demos
 								  (s, b) => s.Approved = b);
 		}
 	}
-   
+
 	/// <summary>
     /// This Is our boilerplate MonoBehaviour for us in the Unity editor
 	/// This instance will be used by state-observers to against, or to find

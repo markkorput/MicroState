@@ -6,9 +6,8 @@ namespace MicroState.Id
 {
 	public class IdStateInstance<DataT, IdStateT> : MonoBehaviour where IdStateT : IdState<DataT>, new()
 	{
-		public DataT data;
-      
-		// private DataT dataInstance = new DataT();
+		[SerializeField]
+		protected DataT data;
 		private IdStateT state_;
 
 		public IdStateT State
@@ -20,7 +19,7 @@ namespace MicroState.Id
 					state_ = new IdStateT();
 					state_.setDataInstance(data);
 				}
-            
+
 				return state_;
 			}
 		}
