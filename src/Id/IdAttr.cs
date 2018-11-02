@@ -1,4 +1,6 @@
 ﻿using System;
+using UnityEngine;
+
 namespace MicroState.Id
 {
 	public class BaseAttrDef
@@ -30,28 +32,73 @@ namespace MicroState.Id
 			this.attrCreator = attrCreator;         
 		}
     }
-
-    public class BaseAttr
-    {
-        protected BaseAttrDef attrDef;
-		public string Id { get { return attrDef.id; }}
-        public System.Type ValueType { get { return attrDef.ValueType; } }
-    }
    
-    public class Attr<StateT, ValT> : BaseAttr
-    {
-        private StateT instance;
+	public class BaseAttr
+	{
+		protected BaseAttrDef attrDef;
+		public string Id { get { return attrDef.id; } }
+		public System.Type ValueType { get { return attrDef.ValueType; } }
       
-        public ValT Value
+		public virtual bool IsEqual(BaseAttr other)
+		{
+			return false;
+		}
+	}
+   
+	public class ValueAttr<ValT> : BaseAttr {
+
+		private System.Func<ValT> getter;
+		private System.Action<ValT> setter;
+
+		public ValT Value
         {
-            get { return ((AttrDef<StateT, ValT>)this.attrDef).getter.Invoke(instance); }
-            set { ((AttrDef<StateT, ValT>)this.attrDef).setter.Invoke(instance, value); }
+			get { return getter.Invoke(); }
+			set { setter.Invoke(value);  }
         }
 
-        public Attr(StateT instance, AttrDef<StateT, ValT> attrDef)
+		protected ValueAttr() {}
+
+		public ValueAttr(System.Func<ValT> g, System.Action<ValT> s) {
+			this.getter = g;
+			this.setter = s;
+		}
+
+		protected void SetAccessors(System.Func<ValT> g, System.Action<ValT> s)
         {
-            this.instance = instance;
+            this.getter = g;
+            this.setter = s;
+        }
+
+		public override bool IsEqual(BaseAttr other)
+        {
+            return this.IsEqual((ValueAttr<ValT>)other);
+        }
+      
+        public bool IsEqual(ValueAttr<ValT> other)
+        {
+            if (this.Value == null || other.Value == null) return this.Value == null && other.Value == null;
+            return this.Value.Equals(other.Value);
+        }
+	}
+   
+    /// <summary>
+	/// Attr binds an data-object (instance) to a ValueAttr, making the instance
+	/// the source for ValueAttr's getter and the destination for ValueAttr's setter
+    /// </summary>
+    public class Attr<StateT, ValT> : ValueAttr<ValT>
+    {
+        private StateT instance;
+
+		public Attr(StateT inst, AttrDef<StateT, ValT> attrDef)
+        {
+			this.instance = inst;
             this.attrDef = attrDef;
+
+			if (inst == null) Debug.Log("NULL INST");
+         
+			base.SetAccessors(
+                () => ((AttrDef<StateT, ValT>)attrDef).getter.Invoke(this.instance),
+				(val) => ((AttrDef<StateT, ValT>)attrDef).setter.Invoke(this.instance, val));
         }
     }
 }

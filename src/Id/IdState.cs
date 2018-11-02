@@ -5,19 +5,32 @@ using UnityEngine;
 
 namespace MicroState.Id
 {
-	public class IdState<StateT>
+	public class IdStateBase {
+		public delegate void ChangeEventDel();
+		public event ChangeEventDel ChangeEvent;
+
+		public void NotifyChange() {
+			if (this.ChangeEvent != null) this.ChangeEvent();
+		}     
+
+		virtual public ValueAttr<ValT> GetAttr<ValT>(string id) {
+			return null;
+		}
+	}
+   
+	public class IdState<StateT> : IdStateBase
 	{
 		private StateT Instance;
 		private List<BaseAttrDef> AttrDefs = new List<BaseAttrDef>();
-      
+
 		public delegate void OnChangeDel(IdState<StateT> state);
-		public event OnChangeDel OnChange;
+        public event OnChangeDel OnChange;      
 
 		public IdState(StateT instance)
 		{
 			this.Instance = instance;
 		}
-      
+
 		public void setDataInstance(StateT inst) { this.Instance = inst; }
         
 		public StateT DataInstance { get { return Instance; }}
@@ -34,8 +47,8 @@ namespace MicroState.Id
 				bool change = !AreEqual(curval, val);
                 // apply original setter
 				setter.Invoke(state, val);
-                // notify if there were changes
-				if (change && this.OnChange != null) this.OnChange(this);
+				// notify if there were changes
+				if (change) this.NotifyChange();
 		    });
          
 			AttrDefs.Add(
@@ -47,8 +60,9 @@ namespace MicroState.Id
 				));
 		}
       
-		public Attr<StateT, ValT> GetAttr<ValT>(string id)
+		public override ValueAttr<ValT> GetAttr<ValT>(string id)
 		{
+			// if (this.Instance == null) return null;
 			var def = AttrDefs.Find((attrdef) => attrdef.id.Equals(id));
 			return def == null ? null : new Attr<StateT, ValT>(this.Instance, (AttrDef<StateT, ValT>)def);
 		}
@@ -56,23 +70,36 @@ namespace MicroState.Id
 		public BaseAttr[] GetAttributes() {
 			return (from it in this.AttrDefs select it.CreateAttr()).ToArray();
 		}
+
+		public BaseAttr[] GetAttributes(StateT data)
+		{
+			var original = this.Instance;
+			this.Instance = data;
+			var attrs = this.GetAttributes();
+			this.Instance = original;
+			return attrs;
+		}
       
 		public static bool AreEqual<T>(T a, T b)
         {
-            //if (Nullable.GetUnderlyingType(typeof(T)) != null && (a == null || b == null)) {
-            //  // if a == null we cannot a a.Equals
-            //  return a == null && b == null;
-            //}
-
-            //if (typeof(T) == typeof(string) && (a == null || b == null)) {
-            //  return a == null && b == null;
-            //}
-         
-            if (a == null || b == null)
-            {
-                return a == null && b == null;
-            }
+			if (a == null || b == null) return a == null && b == null;
             return a.Equals(b);
         }
+      
+		public bool AreEqual(StateT a, StateT b) {
+			var attrsA = this.GetAttributes(a);
+			var attrsB = this.GetAttributes(b);
+         
+			for (int i = 0; i < attrsA.Length; i++) {
+				if (!attrsA[i].IsEqual(attrsB[i])) return false;
+			}
+         
+			return true;
+		}
+      
+		public new void NotifyChange() {
+			if (this.OnChange != null) this.OnChange(this);
+			base.NotifyChange();
+		}
 	}
 }
