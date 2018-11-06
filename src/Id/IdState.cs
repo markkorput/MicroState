@@ -8,7 +8,7 @@ namespace MicroState.Id
 	public class IdStateBase {
 		public delegate void ChangeEventDel();
 		public event ChangeEventDel ChangeEvent;
-
+      
 		public void NotifyChange() {
 			if (this.ChangeEvent != null) this.ChangeEvent();
 		}     
@@ -31,7 +31,12 @@ namespace MicroState.Id
 			this.Instance = instance;
 		}
 
-		public void setDataInstance(StateT inst) { this.Instance = inst; }
+		public void setDataInstance(StateT inst)
+		{
+			bool change = !this.Instance.Equals(inst);
+			this.Instance = inst;
+            this.NotifyChange();
+		}
         
 		public StateT DataInstance { get { return Instance; }}
       

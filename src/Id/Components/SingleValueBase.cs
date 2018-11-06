@@ -10,14 +10,22 @@ namespace MicroState.Id.Components
 		public string AttrId;
 
 		[System.Serializable]
-        public class ValueTypeEvent : UnityEvent<float> {}
-		public ValueTypeEvent ValueEvent; // = new ValueTypeEvent();      
+        public class ValTypeEvent : UnityEvent<ValueT> {}
+		public ValTypeEvent ValueEvent = new ValTypeEvent();      
 
 		private IdStateBase stateBase = null;
-		private ValueAttr<ValueT> valueAttr = null;
+        private ValueAttr<ValueT> valueAttr = null;
 		private bool isFirstValue = true;
 		private ValueT lastValue;
 
+//#if UNITY_EDITOR
+//		[System.Serializable]
+//		public class Dinfo {
+//			public ValueT Value;
+//		}
+//		public Dinfo DebugInfo;
+//#endif
+      
 		private void Start()
 		{
 			this.Register();
@@ -41,7 +49,7 @@ namespace MicroState.Id.Components
 				}
 			}
 		}
-      
+
 		private void OnStateChange()
 		{
 			this.ProcessAttr(this.stateBase);
@@ -59,10 +67,14 @@ namespace MicroState.Id.Components
 
 			if (this.isFirstValue || !lastValue.Equals(val))
 			{
-				//this.ValueEvent.Invoke(val);
+				this.ValueEvent.Invoke(val);
 				this.lastValue = val;
 				this.isFirstValue = false;
 			}
+
+//#if UNITY_EDITOR
+//			this.DebugInfo.Value = val;
+//#endif
 		}
 
 		protected IdStateInstanceBase FindStateInstance(string id)
@@ -71,7 +83,7 @@ namespace MicroState.Id.Components
 				this.GetComponentsInParent<IdStateInstanceBase>())
 				.Find((stateinstance) => stateinstance.Id.Equals(id));
 		}
-
+      
 		#region Public Methods
 		public void Set(ValueT val) {
 			if (this.valueAttr == null)

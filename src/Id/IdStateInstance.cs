@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace MicroState.Id
 {
@@ -16,9 +14,10 @@ namespace MicroState.Id
 	{
 		[SerializeField]
 		protected DataT data;
+
 		private IdStateT state_;
 		private IdStateChangeChecker<DataT> changeChecker = null;
-      
+
 		public IdStateT State
 		{
 			get
@@ -31,20 +30,28 @@ namespace MicroState.Id
 					state_ = new IdStateT();
 					state_.setDataInstance(data);
 
-                    // The change checker makes sure the state's OnChange event gets invoked,
-                    // also when changes are made through the unity editor, directly into the 
+					// The change checker makes sure the state's OnChange event gets invoked,
+					// also when changes are made through the unity editor, directly into the 
 					// serializable this.data object;
 					if (changeChecker != null) this.changeChecker.Dispose();
-					changeChecker = new IdStateChangeChecker<DataT>(this.state_);               
+					changeChecker = new IdStateChangeChecker<DataT>(this.state_);
 				}
-            
+
 				return state_;
 			}
 		}
-      
+
 		public override IdStateBase GetState()
 		{
 			return this.State;
 		}
+      
+#if UNITY_EDITOR
+		private void OnGUI()
+		{
+			if (this.state_ != null) this.state_.setDataInstance(this.data);
+			this.changeChecker.Update();
+		}
+#endif
 	}
 }

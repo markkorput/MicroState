@@ -36,7 +36,7 @@ namespace MicroState.Id
 
 			this.lastSnapshot = CreateSnapShot(state);
         }
-
+      
 		public void Dispose() {
 			this.state.OnChange -= this.OnChange;
 		}
@@ -54,9 +54,9 @@ namespace MicroState.Id
 
 			if (!AreEqual(snapshot, lastSnapshot)) {
 				this.state.NotifyChange();
-			}
-         
-			// lastSnapshot = snapshot; // this happens in the OnChange callback, see constructor
+			}         
+
+			lastSnapshot = snapshot; // this happens in the OnChange callback, see constructor
         }
 
         private static BaseAttrValue[] CreateSnapShot(IdState<DataT> state)
