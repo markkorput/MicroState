@@ -10,7 +10,7 @@ namespace MicroState.Demos
 {
 	/// <summary>
 	/// Generic C-Sharp class which contains our app-specific state
-	/// Mark is as serializable so it is persisted between sessions
+	/// Marked serializable so it is persisted between sessions
 	/// and the default editor shows all fields
     /// </summary>
 	[System.Serializable]
@@ -23,7 +23,7 @@ namespace MicroState.Demos
    
 	/// <summary>
 	/// Our IdState wrapper around our generic CustomState class
-	/// In this class we'll defined attributes with names and getter/setter
+	/// In this class we'll define attributes with names and getter/setter
 	/// methods to propagate changes to/from our CustomState generic state instance
     /// </summary>
 	public class CustomIdState : Id.IdState<CustomState>

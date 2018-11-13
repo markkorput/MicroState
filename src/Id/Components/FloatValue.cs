@@ -8,7 +8,7 @@ namespace MicroState.Id.Components
 	{
 		[System.Serializable]
 		public class ValueTypeEvent : UnityEvent<float> { }
-		public ValueTypeEvent FloatEvent; // = new ValueTypeEvent();
+		public ValueTypeEvent FloatEvent = new ValueTypeEvent();
       
 		void OnEnable()
         {

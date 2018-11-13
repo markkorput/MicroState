@@ -33,7 +33,7 @@ namespace MicroState.Id
 
 		public void setDataInstance(StateT inst)
 		{
-			bool change = !this.Instance.Equals(inst);
+			bool change = (this.Instance == null && inst != null) || !this.Instance.Equals(inst);
 			this.Instance = inst;
             this.NotifyChange();
 		}
