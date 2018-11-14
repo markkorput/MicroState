@@ -6,6 +6,7 @@ namespace MicroState.Id.Components
 {
 	public class IntValue : SingleValueBase<int>
 	{
+		[System.Serializable]
 		public class ValueTypeEvent : UnityEvent<int> { }
 		public ValueTypeEvent IntEvent; // = new ValueTypeEvent();
       

@@ -6,9 +6,10 @@ namespace MicroState.Id.Components
 {
 	public class BoolValue : SingleValueBase<bool>
 	{
+		[System.Serializable]
 		public class ValueTypeEvent : UnityEvent<bool> { }
 		public ValueTypeEvent BoolEvent; // = new ValueTypeEvent();
-
+      
         void OnEnable()
         {
             base.ValueEvent.AddListener(this.InvokeVal);
