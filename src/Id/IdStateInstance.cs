@@ -45,11 +45,12 @@ namespace MicroState.Id
 		{
 			return this.State;
 		}
-      
+
 #if UNITY_EDITOR
 		private void OnGUI()
 		{
-			if (this.state_ != null) this.state_.setDataInstance(this.data);
+			State.setDataInstance(this.data);
+			// if (this.state_ != null) this.state_.setDataInstance(this.data);
 			this.changeChecker.Update();
 		}
 #endif
