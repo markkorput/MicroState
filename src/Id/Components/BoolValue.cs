@@ -10,6 +10,8 @@ namespace MicroState.Id.Components
 		public class ValueTypeEvent : UnityEvent<bool> { }
 		[Header("Bool Value")]
 		public ValueTypeEvent BoolEvent; // = new ValueTypeEvent();
+		public UnityEvent TrueEvent; // = new ValueTypeEvent();
+		public UnityEvent FalseEvent;
 
 		private bool isRegistered = false;
       
@@ -21,10 +23,11 @@ namespace MicroState.Id.Components
                 isRegistered = true;
             }
         }
-      
+
         private void InvokeVal(bool v)
         {
             this.BoolEvent.Invoke(v);
+			(v ? this.TrueEvent : this.FalseEvent).Invoke();
         }
 	}
 }
