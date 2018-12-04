@@ -9,17 +9,18 @@ namespace MicroState.Id.Components
 		[System.Serializable]
 		public class ValueTypeEvent : UnityEvent<float> { }
 		public ValueTypeEvent FloatEvent = new ValueTypeEvent();
-      
+
+		private bool isRegistered = false; 
+
 		void OnEnable()
         {
-            base.ValueEvent.AddListener(this.InvokeVal);
+			if (!isRegistered)
+			{
+				base.ValueEvent.AddListener(this.InvokeVal);
+				isRegistered = true;
+			}
         }
-
-        void OnDisable()
-        {
-            base.ValueEvent.RemoveListener(this.InvokeVal);
-        }
-
+      
         private void InvokeVal(float v)
         {
             this.FloatEvent.Invoke(v);

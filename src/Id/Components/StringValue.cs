@@ -19,20 +19,23 @@ namespace MicroState.Id.Components
         public Dinfo DebugInfo;
         #endif
       
-        void OnEnable() {
-			base.ValueEvent.AddListener(this.InvokeVal);
-        }      
-      
-		void OnDisable() {
-			base.ValueEvent.RemoveListener(this.InvokeVal);
+		private bool isRegistered = false;
+
+        void OnEnable()
+        {
+            if (!isRegistered)
+            {
+                base.ValueEvent.AddListener(this.InvokeVal);
+                isRegistered = true;
+            }
         }
-      
-		private void InvokeVal(string v) {
-			Debug.Log("String invoke");
+
+        private void InvokeVal(string v)
+        {
+            this.StringEvent.Invoke(v);
 #if UNITY_EDITOR
-			this.DebugInfo.Value = v;
+            this.DebugInfo.Value = v;
 #endif
-			this.StringEvent.Invoke(v);
-		}
+        }
 	}
 }

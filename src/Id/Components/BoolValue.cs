@@ -8,16 +8,18 @@ namespace MicroState.Id.Components
 	{
 		[System.Serializable]
 		public class ValueTypeEvent : UnityEvent<bool> { }
+		[Header("Bool Value")]
 		public ValueTypeEvent BoolEvent; // = new ValueTypeEvent();
+
+		private bool isRegistered = false;
       
         void OnEnable()
         {
-            base.ValueEvent.AddListener(this.InvokeVal);
-        }
-
-        void OnDisable()
-        {
-            base.ValueEvent.RemoveListener(this.InvokeVal);
+            if (!isRegistered)
+            {
+                base.ValueEvent.AddListener(this.InvokeVal);
+                isRegistered = true;
+            }
         }
       
         private void InvokeVal(bool v)

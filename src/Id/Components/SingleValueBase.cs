@@ -5,16 +5,20 @@ using System.Collections.Generic;
 namespace MicroState.Id.Components
 {
 	public class SingleValueBase<ValueT> : MonoBehaviour
-	{      
+	{
+		[Header("State Value")]
 		public string StateId;
 		public string AttrId;
+		public bool InvokeWhenInactive = false;
 
 		[System.Serializable]
         public class ValTypeEvent : UnityEvent<ValueT> {}
+
 		public ValTypeEvent ValueEvent = new ValTypeEvent();      
 
 		private IdStateBase stateBase = null;
-        private ValueAttr<ValueT> valueAttr = null;
+		private ValueAttr<ValueT> valueAttr = null;
+
 		private bool isFirstValue = true;
 		private ValueT lastValue;
 
@@ -28,16 +32,6 @@ namespace MicroState.Id.Components
       
 		private void Start()
 		{
-			this.Register();
-		}
-
-		//private void Update()
-		//{
-		//	this.Register();         
-		//}
-
-		private void Register()
-		{
 			if (this.stateBase == null)
 			{
 				var stateinst = FindStateInstance(this.StateId);
@@ -48,6 +42,12 @@ namespace MicroState.Id.Components
 					this.ProcessAttr(this.stateBase);
 				}
 			}
+		}
+
+		private void OnDestroy() {
+			if (this.stateBase == null) return;
+			this.stateBase.ChangeEvent -= this.OnStateChange;
+			this.stateBase = null;
 		}
 
 		private void OnStateChange()
@@ -62,12 +62,14 @@ namespace MicroState.Id.Components
 				this.valueAttr = this.stateBase.GetAttr<ValueT>(AttrId);
 				if (this.valueAttr == null) return;
 			}
-
+         
 			var val = this.valueAttr.Value;
 
 			if (this.isFirstValue || !lastValue.Equals(val))
 			{
-				this.ValueEvent.Invoke(val);
+				if (this.InvokeWhenInactive || this.isActiveAndEnabled)
+					this.ValueEvent.Invoke(val);
+
 				this.lastValue = val;
 				this.isFirstValue = false;
 			}
@@ -83,7 +85,7 @@ namespace MicroState.Id.Components
 				this.GetComponentsInParent<IdStateInstanceBase>())
 				.Find((stateinstance) => stateinstance.Id.Equals(id));
 		}
-      
+
 		#region Public Methods
 		public void Set(ValueT val) {
 			if (this.valueAttr == null)
