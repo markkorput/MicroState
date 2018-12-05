@@ -23,7 +23,7 @@ namespace MicroState.Id.Components
 				statebase.ChangeEvent += this.OnStateChange;
                 this.ProcessAttr(statebase);
 			} else {
-				Debug.LogWarning("[MicroState.Id.SingleValueBase] Could not find State");
+				Debug.LogWarning("[MicroState.Id.SingleValueBase] Could not find State: "+base.StateId);
 			}         
 		}
 
