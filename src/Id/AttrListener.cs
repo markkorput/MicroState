@@ -53,5 +53,9 @@ namespace MicroState.Id
       var attr = this.ValueAttr;
       if (attr != null) this.valueEvent_.Invoke(attr.Value);
     }
+      
+	public void InvokeValue() {
+    	this.OnStateChange();
+	}
   }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MicroState.Id.Components
+namespace MicroState.Id
 {
 	public class BoolActions : MonoBehaviour
 	{

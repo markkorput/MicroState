@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace MicroState.Id.Components
+namespace MicroState.Id
 {
 	public class BoolEvents : MonoBehaviour
 	{
@@ -17,9 +17,9 @@ namespace MicroState.Id.Components
 		[System.Serializable]
 		public class ValueTypeEvent : UnityEvent<bool> { }
 		[Header("Bool Value")]
-		public ValueTypeEvent ValueEvent;
-		public UnityEvent TrueEvent;
-		public UnityEvent FalseEvent;
+		public ValueTypeEvent ValueEvent = new ValueTypeEvent();
+		public UnityEvent TrueEvent = new UnityEvent();
+		public UnityEvent FalseEvent = new UnityEvent();
 
 		private AttrListener<bool> attrListener = null;
 		private AttrListener<bool> AttrListener
@@ -30,12 +30,13 @@ namespace MicroState.Id.Components
 				return this.attrListener;
 			}
 		}
-
+      
 		private void Start()
 		{
 			this.AttrListener.ValueEvent.AddListener(this.OnValue);
+			// this.AttrListener.InvokeValue();
 		}
-
+      
 		private void OnDestroy()
 		{
 			if (this.attrListener != null)
@@ -44,7 +45,7 @@ namespace MicroState.Id.Components
 				this.attrListener = null;
 			}
 		}
-
+      
 		private void OnValue(bool v)
 		{
 			if (!(this.InvokeWhenInactive || this.isActiveAndEnabled)) return;
