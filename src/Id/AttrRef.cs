@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 namespace MicroState.Id
 {
 	public class AttrRef<ValueT>
@@ -19,7 +18,7 @@ namespace MicroState.Id
 			this.AttrId = attrid;
 			this.gameObject = gameObject;
 		}
-         
+
         private IdStateInstanceBase FindStateInstance(string id)
         {
             return new List<IdStateInstanceBase>(
@@ -28,7 +27,7 @@ namespace MicroState.Id
     				: this.gameObject.GetComponentsInParent<IdStateInstanceBase>())
                         .Find((stateinstance) => stateinstance.Id.Equals(id));
         }
-      
+
         public IdStateBase StateBase
         {
             get
@@ -39,7 +38,7 @@ namespace MicroState.Id
                 return this.stateBase_;
             }
         }
-      
+
         public ValueAttr<ValueT> ValueAttr
         {
             get
