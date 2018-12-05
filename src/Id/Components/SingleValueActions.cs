@@ -3,6 +3,12 @@ using System.Collections.Generic;
 
 namespace MicroState.Id.Components
 {
+	[System.Serializable]
+	public struct AttributeId {
+        public string StateId;
+        public string AttrId;
+	}
+   
 	public class SingleValueActions<ValueT> : MonoBehaviour
 	{
 		[Header("Attribute ID")]
