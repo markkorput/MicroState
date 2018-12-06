@@ -31,7 +31,7 @@ namespace MicroState.Id
 					state_.setDataInstance(data);
 
 					// The change checker makes sure the state's OnChange event gets invoked,
-					// also when changes are made through the unity editor, directly into the 
+					// also when changes are made through the unity editor, directly into the
 					// serializable this.data object;
 					if (changeChecker != null) this.changeChecker.Dispose();
 					changeChecker = new IdStateChangeChecker<DataT>(this.state_);
@@ -46,13 +46,26 @@ namespace MicroState.Id
 			return this.State;
 		}
 
+
 #if UNITY_EDITOR
-		private void OnGUI()
-		{
-			State.setDataInstance(this.data);
-			// if (this.state_ != null) this.state_.setDataInstance(this.data);
-			this.changeChecker.Update();
-		}
+        private void Update()
+        {
+			// we don't perform this operation inside the OnGUI method, because that causes a lot of
+			// "Assertion failed on expression: 'IsActive() || GetRunInEditMode()'" log errors
+            if (guiFlag)
+            {
+                State.setDataInstance(this.data);
+                // if (this.state_ != null) this.state_.setDataInstance(this.data);
+                this.changeChecker.Update();
+            }
+        }
+
+        bool guiFlag = false;
+
+        private void OnGUI()
+        {
+            guiFlag = true;
+        }
 #endif
 	}
 }
