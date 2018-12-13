@@ -61,8 +61,8 @@ namespace MicroState.Id
 
             // register listener
 			float valsum = 0.0f;
-			floatval.ValueEvent.AddListener((val) => valsum += val);
-         
+			floatval.ChangeEvent.AddListener((val) => valsum += val);
+
 			Assert.AreEqual(valsum, 0.0f);
 			yield return null; // This invoked the Start method on the floatval component         
 			Assert.AreEqual(valsum, 1f);         
@@ -88,9 +88,9 @@ namespace MicroState.Id
             var floatval = child.AddComponent<Components.FloatValue>();
             floatval.StateId = "TheState";
             floatval.AttrId = "Score";
-
+         
 			int counter = 0;
-			floatval.FloatEvent.AddListener((val) => counter += 1);
+			floatval.ChangeEvent.AddListener((val) => counter += 1);
 			yield return null;
 			Assert.AreEqual(counter, 1);
 			Assert.AreEqual(floatval.InvokeWhenInactive, false);

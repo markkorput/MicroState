@@ -6,19 +6,20 @@ namespace MicroState.Id
 {
 	public class AttrRef<ValueT>
 	{
-		private string StateId, AttrId;
+		public string StateId { get; private set; }
+		public string AttrId { get; private set; }
+
 		private GameObject gameObject = null;
 
 		private IdStateBase stateBase_ = null;
 		private ValueAttr<ValueT> valueAttr_ = null;
-
-
+              
 		public AttrRef(string stateid, string attrid, GameObject gameObject = null) {
 			this.StateId = stateid;
 			this.AttrId = attrid;
 			this.gameObject = gameObject;
 		}
-
+      
         private IdStateInstanceBase FindStateInstance(string id)
         {
             return new List<IdStateInstanceBase>(
@@ -38,7 +39,7 @@ namespace MicroState.Id
                 return this.stateBase_;
             }
         }
-
+      
         public ValueAttr<ValueT> ValueAttr
         {
             get
@@ -50,7 +51,7 @@ namespace MicroState.Id
                 return this.valueAttr_;
             }
         }
-
+      
         public void Set(ValueT val)
         {
             var attr = this.ValueAttr;

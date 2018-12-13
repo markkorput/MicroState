@@ -1,41 +1,66 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-using System.Collections.Generic;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace MicroState.Id.Components
 {
-	public class StringValue : SingleValueBase<string>
+	public class StringValue : MonoBehaviour
 	{
+		[Header("Attribute ID")]
+		public string StateId;
+		public string AttrId;
+
+		[Header("Behaviour")]
+		public bool InvokeWhenInactive = false;
+
 		[System.Serializable]
 		public class ValueTypeEvent : UnityEvent<string> { }
-		public ValueTypeEvent StringEvent; // = new ValueTypeEvent();
+		public ValueTypeEvent ChangeEvent = new ValueTypeEvent();
 
-		#if UNITY_EDITOR
-        [System.Serializable]
-        public class Dinfo
-        {
-            public string Value;
-        }
-        public Dinfo DebugInfo;
-        #endif
-      
-		private bool isRegistered = false;
+		private MicroState.Id.AttrListener<string> attrListener = null;
+		private MicroState.Id.AttrListener<string> AttrListener
+		{
+			get
+			{
+				if (this.attrListener == null) this.attrListener = new MicroState.Id.AttrListener<string>(StateId, AttrId, this.gameObject);
+				return this.attrListener;
+			}
+		}
 
-        void OnEnable()
-        {
-            if (!isRegistered)
-            {
-                base.ValueEvent.AddListener(this.InvokeVal);
-                isRegistered = true;
-            }
-        }
+		private void Start()
+		{
+			this.AttrListener.ChangeEvent.AddListener(this.OnValue);
+		}
 
-        private void InvokeVal(string v)
-        {
-            this.StringEvent.Invoke(v);
-#if UNITY_EDITOR
-            this.DebugInfo.Value = v;
-#endif
-        }
+		private void OnDestroy()
+		{
+			if (this.attrListener != null)
+			{
+				this.attrListener.Dispose();
+				this.attrListener = null;
+			}
+		}
+
+		private void OnValue(string v)
+		{
+			if (!(this.InvokeWhenInactive || this.isActiveAndEnabled)) return;
+			this.ChangeEvent.Invoke(v);
+		}
+
+		#region Public Action Methods
+        public void Set(string v) { this.AttrListener.Set(v); }
+        #endregion      
 	}
+   
+#if UNITY_EDITOR
+	[CustomEditor(typeof(StringValue))]
+	[CanEditMultipleObjects]
+	public class StringValueEditor : AttrRefEditor<string, StringValue>
+	{
+
+	}
+#endif
 }

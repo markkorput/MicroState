@@ -1,33 +1,70 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-using System.Collections.Generic;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace MicroState.Id.Components
 {
-  public class BoolValue : SingleValueBase<bool>
-  {
-    [System.Serializable]
-    public class ValueTypeEvent : UnityEvent<bool> { }
-    [Header("Bool Value")]
-    public ValueTypeEvent BoolEvent; // = new ValueTypeEvent();
-    public UnityEvent TrueEvent; // = new ValueTypeEvent();
-    public UnityEvent FalseEvent;
+	public class BoolValue : MonoBehaviour
+	{
+		[Header("Attribute ID")]
+		public string StateId;
+		public string AttrId;
 
-    private bool isRegistered = false;
+		[Header("Behaviour")]
+		public bool InvokeWhenInactive = false;
 
-    void OnEnable()
+		[System.Serializable]
+		public class ValueTypeEvent : UnityEvent<bool> { }
+		public ValueTypeEvent ChangeEvent = new ValueTypeEvent();
+		public UnityEvent TrueEvent;
+		public UnityEvent FalseEvent;
+
+		private MicroState.Id.AttrListener<bool> attrListener = null;
+		private MicroState.Id.AttrListener<bool> AttrListener
+		{
+			get
+			{
+				if (this.attrListener == null) this.attrListener = new MicroState.Id.AttrListener<bool>(StateId, AttrId, this.gameObject);
+				return this.attrListener;
+			}
+		}
+
+		private void Start()
+		{
+			this.AttrListener.ChangeEvent.AddListener(this.OnValue);
+		}
+
+		private void OnDestroy()
+		{
+			if (this.attrListener != null)
+			{
+				this.attrListener.Dispose();
+				this.attrListener = null;
+			}
+		}
+      
+		private void OnValue(bool v)
+		{
+			if (!(this.InvokeWhenInactive || this.isActiveAndEnabled)) return;
+			this.ChangeEvent.Invoke(v);
+
+			(v ? this.TrueEvent : this.FalseEvent).Invoke();
+		}
+
+		#region Public Action Methods
+		public void Set(bool v) { this.AttrListener.Set(v); }
+		#endregion
+	}
+
+#if UNITY_EDITOR
+    [CustomEditor(typeof(BoolValue))]
+    [CanEditMultipleObjects]
+    public class BoolValueEditor : AttrRefEditor<bool, BoolValue>
     {
-      if (!isRegistered)
-      {
-        base.ValueEvent.AddListener(this.InvokeVal);
-        isRegistered = true;
-      }
-    }
 
-    private void InvokeVal(bool v)
-    {
-      this.BoolEvent.Invoke(v);
-      (v ? this.TrueEvent : this.FalseEvent).Invoke();
     }
-  }
+#endif
 }

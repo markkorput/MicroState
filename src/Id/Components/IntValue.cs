@@ -1,29 +1,66 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-using System.Collections.Generic;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace MicroState.Id.Components
 {
-	public class IntValue : SingleValueBase<int>
-	{
-		[System.Serializable]
-		public class ValueTypeEvent : UnityEvent<int> { }
-		public ValueTypeEvent IntEvent; // = new ValueTypeEvent();
+    public class IntValue : MonoBehaviour
+    {
+        [Header("Attribute ID")]
+        public string StateId;
+        public string AttrId;
 
-		private bool isRegistered = false;
+        [Header("Behaviour")]
+        public bool InvokeWhenInactive = false;
 
-        void OnEnable()
+        [System.Serializable]
+        public class ValueTypeEvent : UnityEvent<int> { }
+        public ValueTypeEvent ChangeEvent = new ValueTypeEvent();
+        
+        private MicroState.Id.AttrListener<int> attrListener = null;
+        private MicroState.Id.AttrListener<int> AttrListener
         {
-            if (!isRegistered)
+            get
             {
-                base.ValueEvent.AddListener(this.InvokeVal);
-                isRegistered = true;
+                if (this.attrListener == null) this.attrListener = new MicroState.Id.AttrListener<int>(StateId, AttrId, this.gameObject);
+                return this.attrListener;
             }
         }
       
-        private void InvokeVal(int v)
+        private void Start()
         {
-            this.IntEvent.Invoke(v);
+            this.AttrListener.ChangeEvent.AddListener(this.OnValue);
         }
-	}
+
+        private void OnDestroy()
+        {
+            if (this.attrListener != null)
+            {
+                this.attrListener.Dispose();
+                this.attrListener = null;
+            }
+        }
+
+        private void OnValue(int v)
+        {
+            if (!(this.InvokeWhenInactive || this.isActiveAndEnabled)) return;
+            this.ChangeEvent.Invoke(v);
+        }
+
+		#region Public Action Methods
+        public void Set(int v) { this.AttrListener.Set(v); }
+        #endregion
+    }
+
+#if UNITY_EDITOR
+    [CustomEditor(typeof(IntValue))]
+    [CanEditMultipleObjects]
+    public class IntValueEditor : AttrRefEditor<int, IntValue>
+    {
+
+    }
+#endif
 }

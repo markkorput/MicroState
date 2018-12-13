@@ -39,7 +39,7 @@ namespace MicroState.Id
 		//public void NewTestScriptSimplePasses() {
 		//    // Use the Assert class to test conditions.
 		//}
-
+      
 		// A UnityTest behaves like a coroutine in PlayMode
 		// and allows you to yield null to skip a frame in EditMode
 		[UnityTest]
@@ -56,18 +56,14 @@ namespace MicroState.Id
 			var child = new GameObject();
             child.transform.SetParent(parent.transform);
          
-            var actions = child.AddComponent<BoolActions>();
-            actions.StateId = "TheState";
-            actions.AttrId = "Flag";
-
-			var attrref = child.AddComponent<BoolEvents>();
-			attrref.StateId = "TheState";
-			attrref.AttrId = "Flag";
+            var bval = child.AddComponent<Components.BoolValue>();
+			bval.StateId = "TheState";
+			bval.AttrId = "Flag";
 
 			// register listener
 			int counter = 0;
-			attrref.ValueEvent.AddListener((val) => counter += 1);
-
+			bval.ChangeEvent.AddListener((val) => counter += 1);
+         
 			Assert.AreEqual(counter, 0);
 			yield return null; // This invoked the Start method on the attrref component         
 			Assert.AreEqual(counter, 2); // ?? should be one?
@@ -77,10 +73,10 @@ namespace MicroState.Id
 			stateinst.State.GetAttr<bool>("Flag").Value = false;
 			Assert.AreEqual(counter, 3);
 
-			actions.Set(true);
+			bval.Set(true);
 			Assert.AreEqual(counter, 4);
 			Assert.IsTrue(stateinst.State.DataInstance.Flag);
-			actions.Set(false);
+			bval.Set(false);
             Assert.AreEqual(counter, 5);
 			Assert.IsFalse(stateinst.State.DataInstance.Flag);         
 		}

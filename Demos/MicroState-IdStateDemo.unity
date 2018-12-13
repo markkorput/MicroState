@@ -123,6 +123,7 @@ GameObject:
   - component: {fileID: 663789515}
   - component: {fileID: 663789517}
   - component: {fileID: 663789516}
+  - component: {fileID: 663789518}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -188,6 +189,36 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 663789514}
   m_CullTransparentMesh: 0
+--- !u!114 &663789518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 663789514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1234e473d0f7a4bdc8c05c19226e2ca0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StateId: TheOtherOne
+  AttrId: Name
+  InvokeWhenInactive: 0
+  ChangeEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 663789516}
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: MicroState.Id.Components.StringValue+ValueTypeEvent, MicroState, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!1 &711807531
 GameObject:
   m_ObjectHideFlags: 0
@@ -254,66 +285,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &794851399
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 794851400}
-  - component: {fileID: 794851401}
-  m_Layer: 0
-  m_Name: Name
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &794851400
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 794851399}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1540420732}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &794851401
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 794851399}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cf6fca183cfd444ea349735e43a0431, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StateId: OnlyState
-  AttrId: Namee
-  StringEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 663789516}
-        m_MethodName: set_text
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: MicroState.Id.Components.StringValue+ValueTypeEvent, MicroState, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  DebugInfo:
-    Value: 
 --- !u!1 &931142781
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,7 +422,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1540420730
 GameObject:
@@ -462,6 +433,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1540420732}
   - component: {fileID: 1540420731}
+  - component: {fileID: 1540420733}
   m_Layer: 0
   m_Name: StateInstance
   m_TagString: Untagged
@@ -477,13 +449,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1540420730}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa95dda4ac5004936bb7e8b4c6f5b0ca, type: 3}
+  m_Script: {fileID: 11500000, guid: d4821dd0af4894ed3b916fef86150b11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Id: OnlyState
+  Id: TheState
   data:
-    Name: Nobody
-    Number: 41
+    Name: Initial Name
+    Number: 2
     Approved: 1
 --- !u!4 &1540420732
 Transform:
@@ -495,10 +467,26 @@ Transform:
   m_LocalPosition: {x: 0, y: 1.2336001, z: 1.045}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 794851400}
+  - {fileID: 1802884883}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1540420733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1540420730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4821dd0af4894ed3b916fef86150b11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Id: TheOtherOne
+  data:
+    Name: Cool
+    Number: 0
+    Approved: 0
 --- !u!1 &1802884879
 GameObject:
   m_ObjectHideFlags: 0
@@ -585,8 +573,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 663789515}
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_Father: {fileID: 1540420732}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

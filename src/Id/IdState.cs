@@ -16,8 +16,12 @@ namespace MicroState.Id
 		virtual public ValueAttr<ValT> GetAttr<ValT>(string id) {
 			return null;
 		}
+
+		virtual public string[] GetAttributeIds() {
+			return new string[0];
+		}
 	}
-   
+
 	public class IdState<StateT> : IdStateBase
 	{
 		private StateT Instance;
@@ -64,13 +68,18 @@ namespace MicroState.Id
 					() => this.GetAttr<ValT>(id)
 				));
 		}
-      
+
 		public override ValueAttr<ValT> GetAttr<ValT>(string id)
 		{
 			// if (this.Instance == null) return null;
 			var def = AttrDefs.Find((attrdef) => attrdef.id.Equals(id));
 			return def == null ? null : new Attr<StateT, ValT>(this.Instance, (AttrDef<StateT, ValT>)def);
 		}
+      
+		public override string[] GetAttributeIds()
+        {
+			return (from def in this.AttrDefs select def.id).ToArray();
+        }
 
 		public BaseAttr[] GetAttributes() {
 			return (from it in this.AttrDefs select it.CreateAttr()).ToArray();

@@ -1,29 +1,66 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-using System.Collections.Generic;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace MicroState.Id.Components
 {
-	public class FloatValue : SingleValueBase<float>
-	{
-		[System.Serializable]
-		public class ValueTypeEvent : UnityEvent<float> { }
-		public ValueTypeEvent FloatEvent = new ValueTypeEvent();
+    public class FloatValue : MonoBehaviour
+    {
+        [Header("Attribute ID")]
+        public string StateId;
+        public string AttrId;
 
-		private bool isRegistered = false; 
+        [Header("Behaviour")]
+        public bool InvokeWhenInactive = false;
 
-		void OnEnable()
+        [System.Serializable]
+        public class ValueTypeEvent : UnityEvent<float> { }
+        public ValueTypeEvent ChangeEvent = new ValueTypeEvent();
+
+        private MicroState.Id.AttrListener<float> attrListener = null;
+        private MicroState.Id.AttrListener<float> AttrListener
         {
-			if (!isRegistered)
-			{
-				base.ValueEvent.AddListener(this.InvokeVal);
-				isRegistered = true;
-			}
+            get
+            {
+                if (this.attrListener == null) this.attrListener = new MicroState.Id.AttrListener<float>(StateId, AttrId, this.gameObject);
+                return this.attrListener;
+            }
         }
-      
-        private void InvokeVal(float v)
+
+        private void Start()
         {
-            this.FloatEvent.Invoke(v);
+            this.AttrListener.ChangeEvent.AddListener(this.OnValue);
         }
-	}
+
+        private void OnDestroy()
+        {
+            if (this.attrListener != null)
+            {
+                this.attrListener.Dispose();
+                this.attrListener = null;
+            }
+        }
+
+        private void OnValue(float v)
+        {
+            if (!(this.InvokeWhenInactive || this.isActiveAndEnabled)) return;
+            this.ChangeEvent.Invoke(v);
+        }
+
+		#region Public Action Methods
+        public void Set(float v) { this.AttrListener.Set(v); }
+        #endregion
+    }
+   
+#if UNITY_EDITOR
+    [CustomEditor(typeof(FloatValue))]
+    [CanEditMultipleObjects]
+    public class FloatValueEditor : AttrRefEditor<float, FloatValue>
+    {
+
+    }
+#endif
 }
