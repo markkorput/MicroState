@@ -10,6 +10,11 @@ namespace MicroState.Id
 		public event ChangeEventDel ChangeEvent;
       
 		public void NotifyChange() {
+			if (this.IsBatching) {
+				this.batchChanges += 1;
+				return;
+			}
+
 			if (this.ChangeEvent != null) this.ChangeEvent();
 		}     
 
@@ -20,6 +25,25 @@ namespace MicroState.Id
 		virtual public string[] GetAttributeIds() {
 			return new string[0];
 		}
+
+        // Batching Stuff
+		private int batchCount = 0;
+        private int batchChanges = 0;
+      
+        public bool IsBatching { get { return this.batchCount > 0; } }
+      
+        public void BatchUpdate(System.Action func)
+        {
+            batchCount += 1;
+            func.Invoke();
+            batchCount -= 1;
+         
+            if (batchCount == 0 && batchChanges > 0)
+            {
+                this.NotifyChange();
+                batchChanges = 0;
+            }
+        }      
 	}
 
 	public class IdState<StateT> : IdStateBase
