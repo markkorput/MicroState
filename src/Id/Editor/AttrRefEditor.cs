@@ -12,7 +12,7 @@ namespace MicroState.Id
 	public class AttrRefEditor<ValueT, ValueCompType> : Editor where ValueCompType : MonoBehaviour 
 	{
 		SerializedProperty StateIdProp, AttrIdProp;
-
+      
 		void OnEnable()
 		{
 			StateIdProp = serializedObject.FindProperty("StateId");
@@ -21,11 +21,15 @@ namespace MicroState.Id
 
 		public override void OnInspectorGUI()
 		{
-			this.DrawStateForm();
-			EditorGUILayout.Separator();
 			this.DrawDefaultInspector();
-		}
+			EditorGUILayout.Separator();
 
+			var style = GUI.skin.label;
+            style.fontStyle = FontStyle.Bold;         
+			EditorGUILayout.LabelField("State/Attribute Form", new GUIStyle(style));         
+			this.DrawStateForm();
+		}
+      
 		protected void DrawStateForm() {
 			var attrRef = new MicroState.Id.AttrRef<ValueT>(StateIdProp.stringValue, AttrIdProp.stringValue, ((MonoBehaviour)this.target).gameObject);
 

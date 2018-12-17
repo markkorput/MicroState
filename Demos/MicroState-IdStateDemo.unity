@@ -200,7 +200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1234e473d0f7a4bdc8c05c19226e2ca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StateId: TheOtherOne
+  StateId: TheState
   AttrId: Name
   InvokeWhenInactive: 0
   ChangeEvent:

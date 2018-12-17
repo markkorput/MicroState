@@ -20,7 +20,7 @@ namespace MicroState.Demos
 		public int Number = 0;
 		public bool Approved = false;
 	}
-
+   
 	/// <summary>
 	/// Our IdState wrapper around our generic CustomState class
 	/// In this class we'll define attributes with names and getter/setter
@@ -39,7 +39,7 @@ namespace MicroState.Demos
 			base.CreateAttr<int>("Number",
 									(state) => state.Number,
 									(state, val) => state.Number = val);
-
+         
 			base.CreateAttr<bool>("Approved",
 								  (state) => state.Approved,
 								  (s, b) => s.Approved = b);
