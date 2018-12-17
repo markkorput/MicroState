@@ -8,9 +8,8 @@ namespace MicroState.Id
 	{
 		public string StateId { get; private set; }
 		public string AttrId { get; private set; }
-
-		private GameObject gameObject = null;
-
+      
+		private GameObject gameObject = null;      
 		private IdStateBase stateBase_ = null;
 		private ValueAttr<ValueT> valueAttr_ = null;
       
@@ -57,7 +56,7 @@ namespace MicroState.Id
                 return this.valueAttr_;
             }
         }
-      
+
         public void Set(ValueT val)
         {
             var attr = this.ValueAttr;

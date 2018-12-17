@@ -32,7 +32,7 @@ namespace MicroState.Id
       
 		protected void DrawStateForm() {
 			var attrRef = new MicroState.Id.AttrRef<ValueT>(StateIdProp.stringValue, AttrIdProp.stringValue, ((MonoBehaviour)this.target).gameObject);
-
+         
             {   // State Object ID Selector
                 var objs = ((MonoBehaviour)this.target).gameObject.GetComponentsInParent<IdStateInstanceBase>();
                 var objids = (from ob in objs select ob.Id).ToList();
@@ -84,8 +84,7 @@ namespace MicroState.Id
                 }
                 else
                 {
-                    // EditorGUILayout.LabelField("Initial Value: "+attrRef.ValueAttr.Value.ToString());
-                    EditorGUILayout.HelpBox("Initial Value: " + attrRef.ValueAttr.Value.ToString(), MessageType.Info);
+					EditorGUILayout.HelpBox(attrRef.ValueAttr.Value.ToString(), MessageType.Info);
                 }
             }
             catch (System.InvalidCastException exc)
