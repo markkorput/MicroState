@@ -40,12 +40,11 @@ namespace MicroState.Id
 				return state_;
 			}
 		}
-
+      
 		public override IdStateBase GetState()
 		{
 			return this.State;
 		}
-
 
 #if UNITY_EDITOR
         private void Update()

@@ -13,13 +13,13 @@ namespace MicroState.Id
 
 		private IdStateBase stateBase_ = null;
 		private ValueAttr<ValueT> valueAttr_ = null;
-
+      
 		public AttrRef(string stateid, string attrid, GameObject gameObject = null) {
 			this.StateId = stateid;
 			this.AttrId = attrid;
 			this.gameObject = gameObject;
 		}
-      
+
         private IdStateInstanceBase FindStateInstance(string id)
         {
             return new List<IdStateInstanceBase>(
@@ -28,7 +28,13 @@ namespace MicroState.Id
     				: this.gameObject.GetComponentsInParent<IdStateInstanceBase>())
                         .Find((stateinstance) => stateinstance.Id.Equals(id));
         }
-
+      
+		public IdStateInstanceBase StateInstanceBase {
+			get {
+				return this.FindStateInstance(this.StateId);
+			}
+		}
+      
         public IdStateBase StateBase
         {
             get

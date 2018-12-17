@@ -14,7 +14,7 @@ namespace MicroState.Id
                 this.batchChanges += 1;
                 return;
             }
-
+         
             if (this.ChangeEvent != null) this.ChangeEvent();
         }
 
