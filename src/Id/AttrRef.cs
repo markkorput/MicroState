@@ -13,7 +13,7 @@ namespace MicroState.Id
 
 		private IdStateBase stateBase_ = null;
 		private ValueAttr<ValueT> valueAttr_ = null;
-              
+
 		public AttrRef(string stateid, string attrid, GameObject gameObject = null) {
 			this.StateId = stateid;
 			this.AttrId = attrid;
@@ -57,6 +57,19 @@ namespace MicroState.Id
             var attr = this.ValueAttr;
             if (attr == null) return;
             attr.Value = val;
+        }
+
+        public ValueT Value {
+            get
+            {
+                var attr = this.ValueAttr;
+                if (attr == null) return default(ValueT);
+                return attr.Value;
+            }
+
+            set {
+                this.Set(value);
+            }
         }
 	}
 }

@@ -23,21 +23,20 @@ namespace MicroState.Id
 		{
 			var attrRef = new MicroState.Id.AttrRef<ValueT>(StateIdProp.stringValue, AttrIdProp.stringValue, ((MonoBehaviour)this.target).gameObject);
 			{
-				{   // State Selector
+				{ // State Object Selector
 					var objs = ((MonoBehaviour)this.target).gameObject.GetComponentsInParent<IdStateInstanceBase>();
 					var objids = (from ob in objs select ob.Id).ToList();
 
 					var selectedidx = objids.IndexOf(StateIdProp.stringValue);
+
 					selectedidx = EditorGUILayout.Popup("Available States", selectedidx, objids.ToArray());
 					if (selectedidx >= 0 && selectedidx < objids.Count)
 					{
-                        StateIdProp.stringValue = objids[selectedidx];
+						StateIdProp.stringValue = objids[selectedidx];
 						AttrIdProp.serializedObject.ApplyModifiedProperties();
-						// ((ValueCompType)this.target).StateId = objids[selectedidx];
-						//StateIdProp = ids[selectedidx];
 					}
 				}
-            
+
 				// Attr Selector
 				if (attrRef.StateBase != null)
 				{
@@ -48,29 +47,29 @@ namespace MicroState.Id
 					{                     
 						AttrIdProp.stringValue = ids[selectedidx];
 						AttrIdProp.serializedObject.ApplyModifiedProperties();
-						// ((ValueCompType)this.target).AttrId = ids[selectedidx];
 					}
 				}
 
+				// Try to fetch initial value (if it fails with an InvalidCastException, this means that the
+				// specified Attribute's value type does not match with our ValueT)
 				try
 				{
 					if (attrRef.StateBase == null || attrRef.ValueAttr == null)
 					{
-						if (attrRef.StateBase == null) EditorGUILayout.TextArea("Could not find State Container");
-						if (attrRef.ValueAttr == null) EditorGUILayout.TextArea("Could not find State Attribute");
+						if (attrRef.StateBase == null) EditorGUILayout.HelpBox("Could not find State Container", MessageType.Warning);
+						else if (attrRef.ValueAttr == null) EditorGUILayout.HelpBox("Could not find State Attribute", MessageType.Warning);
 					} else {
-						EditorGUILayout.LabelField("Initial Value: "+attrRef.ValueAttr.Value.ToString());                  
+						// EditorGUILayout.LabelField("Initial Value: "+attrRef.ValueAttr.Value.ToString());
+						EditorGUILayout.HelpBox("Initial Value: " + attrRef.ValueAttr.Value.ToString(), MessageType.Info);
 					}
 				}
 				catch (System.InvalidCastException exc)
 				{
-					EditorGUILayout.TextArea("INVALID TYPE");
+					EditorGUILayout.HelpBox("INVALID_TYPE", MessageType.Error);
 				}
 			}
-        
+
 			EditorGUILayout.Separator();
-			EditorGUILayout.Separator();
-        
 			this.DrawDefaultInspector();
 		}
 	}

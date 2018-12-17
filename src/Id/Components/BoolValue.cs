@@ -55,7 +55,8 @@ namespace MicroState.Id.Components
 		}
 
 		#region Public Action Methods
-		public void Set(bool v) { this.AttrListener.Set(v); }
+			public void Set(bool v) { this.AttrListener.Set(v); }
+			public void Toggle() { this.AttrListener.Value = !this.AttrListener.Value; }
 		#endregion
 	}
 

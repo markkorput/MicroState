@@ -20,7 +20,7 @@ namespace MicroState.Demos
 		public int Number = 0;
 		public bool Approved = false;
 	}
-   
+
 	/// <summary>
 	/// Our IdState wrapper around our generic CustomState class
 	/// In this class we'll define attributes with names and getter/setter
@@ -47,22 +47,11 @@ namespace MicroState.Demos
 	}
 
 	/// <summary>
-    /// This Is our boilerplate MonoBehaviour for us in the Unity editor
-	/// This instance will be used by state-observers to against, or to find
+    /// This Is our boilerplate MonoBehaviour for use in the Unity editor
+	/// This instance will be used by state-observers to link against, or to find
 	/// their state instance.
     /// </summary>
 	public class CustomIdStateInstance : Id.IdStateInstance<CustomState, CustomIdState>
 	{
 	}
-   
-//#if UNITY_EDITOR
-//	/// <summary>
-//    /// This Is our boilerplate Editor which is able to determine what (type of)
-//	/// fields to render based on the attributes in gets from the IdState
-//	/// </summary>
-//	[CustomEditor(typeof(CustomIdStateInstance))]
-//	public class CustomIdStateInstanceEditor : Id.IdStateInstanceEditor<CustomState, CustomIdState, CustomIdStateInstance>
-//	{
-//	}
-//#endif
 }
