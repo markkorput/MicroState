@@ -45,13 +45,13 @@ namespace MicroState.Id.Components
 				this.attrListener = null;
 			}
 		}
-      
+
 		private void OnValue(bool v)
 		{
 			if (!(this.InvokeWhenInactive || this.isActiveAndEnabled)) return;
 			this.ChangeEvent.Invoke(v);
-
-			(v ? this.TrueEvent : this.FalseEvent).Invoke();
+			var evt = (v ? this.TrueEvent : this.FalseEvent);
+			if (evt != null) evt.Invoke(); // In unity 2018.3 this started giving NullReferenceExceptions in PlayMode tests...
 		}
 
 		#region Public Action Methods

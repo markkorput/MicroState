@@ -55,30 +55,32 @@ namespace MicroState.Id
 
 			var child = new GameObject();
             child.transform.SetParent(parent.transform);
-         
+			child.SetActive(false);
+
             var bval = child.AddComponent<Components.BoolValue>();
+			child.SetActive(true);
 			bval.StateId = "TheState";
 			bval.AttrId = "Flag";
 
 			// register listener
 			int counter = 0;
 			bval.ChangeEvent.AddListener((val) => counter += 1);
-         
+
 			Assert.AreEqual(counter, 0);
 			yield return null; // This invoked the Start method on the attrref component         
-			Assert.AreEqual(counter, 2); // ?? should be one?
+			Assert.AreEqual(counter, 1);
 
 			stateinst.State.GetAttr<bool>("Flag").Value = false;
-			Assert.AreEqual(counter, 3);
+			Assert.AreEqual(counter, 2);
 			stateinst.State.GetAttr<bool>("Flag").Value = false;
-			Assert.AreEqual(counter, 3);
+			Assert.AreEqual(counter, 2);
 
 			bval.Set(true);
-			Assert.AreEqual(counter, 4);
+			Assert.AreEqual(counter, 3);
 			Assert.IsTrue(stateinst.State.DataInstance.Flag);
 			bval.Set(false);
-            Assert.AreEqual(counter, 5);
-			Assert.IsFalse(stateinst.State.DataInstance.Flag);         
+            Assert.AreEqual(counter, 4);
+			Assert.IsFalse(stateinst.State.DataInstance.Flag);
 		}
 	}
 }
