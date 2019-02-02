@@ -93,6 +93,11 @@ namespace MicroState.Id
                 ));
         }
 
+        // Creates Read-Only Virtual Attribute
+        protected void CreateAttr<ValT>(string id, System.Func<StateT, ValT> getter) {
+            this.CreateAttr(id, getter, (stat, val) => {});
+        }
+
         public override ValueAttr<ValT> GetAttr<ValT>(string id)
         {
             // if (this.Instance == null) return null;
