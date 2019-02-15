@@ -7,6 +7,7 @@ using UnityEditor;
 
 namespace MicroState.Id.Components
 {
+    [System.Obsolete("Use FloatAttr")]
     public class FloatValue : MonoBehaviour
     {
         [Header("Attribute ID")]
