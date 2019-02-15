@@ -7,6 +7,7 @@ using UnityEditor;
 
 namespace MicroState.Id.Components
 {
+	[System.Obsolete("Use BoolAttr")]
 	public class BoolValue : MonoBehaviour
 	{
 		[Header("Attribute ID")]
