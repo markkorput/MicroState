@@ -7,6 +7,7 @@ using UnityEditor;
 
 namespace MicroState.Id.Components
 {
+    [System.Obsolete("Use DoubleAttr")]
     public class DoubleValue : MonoBehaviour
     {
         [Header("Attribute ID")]

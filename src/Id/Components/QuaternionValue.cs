@@ -7,6 +7,7 @@ using UnityEditor;
 
 namespace MicroState.Id.Components
 {
+  [System.Obsolete("Use QuaternionAttr")]
   public class QuaternionValue : MonoBehaviour
   {
     [Header("Attribute ID")]
@@ -52,6 +53,10 @@ namespace MicroState.Id.Components
 
     #region Public Action Methods
     public void Set(Quaternion v) { this.AttrListener.Set(v); }
+    public void Invoke(bool alsoWhenInactive=true) {
+      if (this.isActiveAndEnabled || alsoWhenInactive)
+        this.ChangeEvent.Invoke(this.AttrListener.Value);
+    }
     #endregion      
   }
 
