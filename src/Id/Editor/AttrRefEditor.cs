@@ -84,7 +84,8 @@ namespace MicroState.Id
                 }
                 else
                 {
-					EditorGUILayout.HelpBox(attrRef.ValueAttr.Value.ToString(), MessageType.Info);
+                    var val = attrRef.ValueAttr.Value;
+					EditorGUILayout.HelpBox(val == null ? "null" : val.ToString(), MessageType.Info);
                 }
             }
             catch (System.InvalidCastException exc)
