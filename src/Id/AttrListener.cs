@@ -54,7 +54,9 @@ namespace MicroState.Id
 			if (attr != null)
 			{
 				var val = attr.Value;
-				if (this.isFirstValue || !this.lastValue.Equals(val))
+				if (this.isFirstValue 
+					|| (this.lastValue == null && val != null)
+					|| (this.lastValue != null && !this.lastValue.Equals(val)))
 				{
 					this.changeEvent_.Invoke(val);
 				}
