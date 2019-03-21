@@ -21,7 +21,7 @@ namespace MicroState.Demos
 		public ProxyState(ProxyData instance) : base(instance)
 		{
 			base.CreateAttr<string>("PostfixedName",
-									(state) => this.origin.DataInstance.Name + state.Postfix);
+				(state, origin) => origin.Name + state.Postfix);
 		}
 	}
 
@@ -30,7 +30,7 @@ namespace MicroState.Demos
 	/// This instance will be used by state-observers to link against, or to find
 	/// their state instance.
     /// </summary>
-	public class ProxyStateInstance : Id.IdStateProxyInstance<ProxyData, ProxyState, CustomState, CustomIdState, CustomIdStateInstance>
+	public class ProxyStateInstance : Id.IdStateProxyInstance<ProxyData, ProxyState, CustomState, CustomIdState>
 	{
 	}
 }

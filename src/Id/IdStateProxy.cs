@@ -36,5 +36,19 @@ namespace MicroState.Id
         private void OnOriginChange(IdState<OriginType> origin) {
             this.NotifyChange();
         }
+
+        protected void CreateAttr<ValT>(string id,
+            System.Func<DataType, OriginType, ValT> getter,
+            System.Action<DataType, OriginType, ValT> setter = null) {
+
+            base.CreateAttr(id,
+                (data) => {
+                    if (this.origin == null) return default(ValT);
+                    return getter.Invoke(data, this.origin.DataInstance);
+                },
+                (data,val) => {
+                    if (this.origin != null && setter != null) setter.Invoke(data, this.origin.DataInstance, val);
+                });
+        }
     }
 }

@@ -79,7 +79,7 @@ namespace MicroState.Id
                 // check for changes
                 bool change = !AreEqual(curval, val);
                 // apply original setter
-                setter.Invoke(state, val);
+                if (setter != null) setter.Invoke(state, val);
                 // notify if there were changes
                 if (change) this.NotifyChange();
             });
@@ -95,7 +95,7 @@ namespace MicroState.Id
 
         // Creates Read-Only Virtual Attribute
         protected void CreateAttr<ValT>(string id, System.Func<StateT, ValT> getter) {
-            this.CreateAttr(id, getter, (stat, val) => {});
+            this.CreateAttr(id, getter, null);
         }
 
         public override ValueAttr<ValT> GetAttr<ValT>(string id)
