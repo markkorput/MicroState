@@ -27,9 +27,7 @@ namespace MicroState.Id
 					if (data == null)
 						data = new DataT();
 
-					state_ = new IdStateT();
-					state_.setDataInstance(data);
-
+					this.state_ = CreateState(data);
 					// The change checker makes sure the state's OnChange event gets invoked,
 					// also when changes are made through the unity editor, directly into the
 					// serializable this.data object;
@@ -40,10 +38,16 @@ namespace MicroState.Id
 				return state_;
 			}
 		}
-      
+
 		public override IdStateBase GetState()
 		{
 			return this.State;
+		}
+
+		virtual protected IdStateT CreateState(DataT data) {
+			IdStateT state = new IdStateT();
+			state.setDataInstance(data);
+			return state;
 		}
 
 #if UNITY_EDITOR
