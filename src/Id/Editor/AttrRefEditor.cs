@@ -11,10 +11,11 @@ namespace MicroState.Id
 	[CanEditMultipleObjects]
 	public class AttrRefEditor<ValueT, ValueCompType> : Editor where ValueCompType : MonoBehaviour 
 	{
-		SerializedProperty StateIdProp, AttrIdProp;
+		SerializedProperty StateInstanceProp, StateIdProp, AttrIdProp;
       
 		void OnEnable()
 		{
+            StateInstanceProp = serializedObject.FindProperty("StateId");
 			StateIdProp = serializedObject.FindProperty("StateId");
 			AttrIdProp = serializedObject.FindProperty("AttrId");
 		}
@@ -29,36 +30,54 @@ namespace MicroState.Id
 			EditorGUILayout.LabelField("State/Attribute Form", new GUIStyle(style));         
 			this.DrawStateForm();
 		}
-      
+
+        private IdStateInstanceBase GetStateInst(SerializedProperty prop) {
+            var targetObject = prop.serializedObject.targetObject;
+            var targetObjectClassType = targetObject.GetType();
+            var field = targetObjectClassType.GetField(prop.propertyPath);
+            if (field == null) return null;
+            var value = field.GetValue(targetObject);
+            // Debug.Log(value.s);
+            return (IdStateInstanceBase)value;
+        }
+
 		protected void DrawStateForm() {
-			var attrRef = new MicroState.Id.AttrRef<ValueT>(StateIdProp.stringValue, AttrIdProp.stringValue, ((MonoBehaviour)this.target).gameObject);
-         
-            {   // State Object ID Selector
-                var objs = ((MonoBehaviour)this.target).gameObject.GetComponentsInParent<IdStateInstanceBase>();
-                var objids = (from ob in objs select ob.Id).ToList();
-            
-                var selectedidx = objids.IndexOf(StateIdProp.stringValue);
-                var newselectedidx = EditorGUILayout.Popup("Available States", selectedidx, objids.ToArray());            
-            
-				if (newselectedidx != selectedidx && newselectedidx >= 0 && newselectedidx < objids.Count)
+            var stateinst = ((Components.BaseAttrBase)this.target).StateInstance;
+
+			var attrRef = stateinst != null
+                ? new MicroState.Id.AttrRef<ValueT>(stateinst.GetState(), AttrIdProp.stringValue)
+                : new MicroState.Id.AttrRef<ValueT>(StateIdProp.stringValue, AttrIdProp.stringValue, ((MonoBehaviour)this.target).gameObject);
+
+            // var attrRef = new MicroState.Id.AttrRef<ValueT>(StateIdProp.stringValue, AttrIdProp.stringValue, ((MonoBehaviour)this.target).gameObject);
+
+            if (stateinst == null) {
+                {   // State Object ID Selector
+                    var objs = ((MonoBehaviour)this.target).gameObject.GetComponentsInParent<IdStateInstanceBase>();
+                    var objids = (from ob in objs select ob.Id).ToList();
+                
+                    var selectedidx = objids.IndexOf(StateIdProp.stringValue);
+                    var newselectedidx = EditorGUILayout.Popup("Available States", selectedidx, objids.ToArray());            
+                
+                    if (newselectedidx != selectedidx && newselectedidx >= 0 && newselectedidx < objids.Count)
+                    {
+                        StateIdProp.stringValue = objids[newselectedidx];
+                        AttrIdProp.serializedObject.ApplyModifiedProperties();
+                    }
+                }
+
                 {
-                    StateIdProp.stringValue = objids[newselectedidx];
-                    AttrIdProp.serializedObject.ApplyModifiedProperties();
-				}
+                    // State Object Selector
+                    var stateobj = attrRef.StateInstanceBase;
+                    var newstateobj = (IdStateInstanceBase)EditorGUILayout.ObjectField("State Instance Object",
+                        stateobj, typeof(IdStateInstanceBase), true);
+
+                    if (newstateobj != stateobj) {
+                        StateIdProp.stringValue = newstateobj == null ? "" : newstateobj.Id;
+                        AttrIdProp.serializedObject.ApplyModifiedProperties();               
+                    }
+                }
             }
 
-			{
-				// State Object Selector
-				var stateobj = attrRef.StateInstanceBase;
-				var newstateobj = (IdStateInstanceBase)EditorGUILayout.ObjectField("State Instance Object",
-                    stateobj, typeof(IdStateInstanceBase), true);
-
-				if (newstateobj != stateobj) {
-					StateIdProp.stringValue = newstateobj == null ? "" : newstateobj.Id;
-                    AttrIdProp.serializedObject.ApplyModifiedProperties();               
-				}
-			}
-         
             // Attr Selector
             if (attrRef.StateBase != null)
             {

@@ -141,6 +141,6 @@ namespace MicroState.Id
 			Assert.AreEqual(state.AreEqual(cl1, cl2), false);
 			cl1.Name = "foo";
 			Assert.AreEqual(state.AreEqual(cl1, cl2), true);
-		}      
+		}
 	}
 }

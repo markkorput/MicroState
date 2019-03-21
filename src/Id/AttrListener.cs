@@ -32,6 +32,10 @@ namespace MicroState.Id
 			}
 		}
 
+		public AttrListener(IdStateBase state, string attrid) : base(state, attrid)
+		{
+		}
+
 		public AttrListener(string stateid, string attrid, GameObject gameObject = null) : base(stateid, attrid, gameObject)
 		{
 		}

@@ -7,14 +7,20 @@ using UnityEditor;
 
 namespace MicroState.Id.Components
 {
-	public class BaseAttr<T> : MonoBehaviour {
-		[Header("Attribute ID")]
+	public class BaseAttrBase : MonoBehaviour {
+		[Header("State Attribute")]
+		[Tooltip("Optional; when specified, will use this state instacne's State")]
+		public IdStateInstanceBase StateInstance;
+		[Tooltip("Optional; when specified, will try to find the IdStateInstance with this ID and use that state instance's State")]
 		public string StateId;
+		[Tooltip("Required; the name of the virtual attribute in our State")]
 		public string AttrId;
 
 		[Header("Behaviour")]
 		public bool InvokeWhenInactive = false;
+	}
 
+	public class BaseAttr<T> : BaseAttrBase {
 		// [System.Serializable]
 		// public class ValueTypeEvent : UnityEvent<T> { }
 		// public ValueTypeEvent ChangeEvent = new ValueTypeEvent();
@@ -26,7 +32,12 @@ namespace MicroState.Id.Components
 		{
 			get
 			{
-				if (this.attrListener == null) this.attrListener = new MicroState.Id.AttrListener<T>(StateId, AttrId, this.gameObject);
+				if (this.attrListener == null) {
+					this.attrListener =
+						this.StateInstance != null
+							? new MicroState.Id.AttrListener<T>(this.StateInstance.GetState(), this.AttrId)
+							: new MicroState.Id.AttrListener<T>(this.StateId, this.AttrId, this.gameObject);
+				}
 				return this.attrListener;
 			}
 		}

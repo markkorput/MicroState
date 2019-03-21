@@ -201,13 +201,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 663789514}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1234e473d0f7a4bdc8c05c19226e2ca0, type: 3}
+  m_Script: {fileID: 11500000, guid: cfa380cc678ba453ea8616eb764406c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StateId: TheState
+  StateInstance: {fileID: 1540420731}
+  StateId: 
   AttrId: Name
   InvokeWhenInactive: 0
-  ChangeEvent:
+  ValueEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 663789516}
@@ -221,7 +222,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: MicroState.Id.Components.StringValue+ValueTypeEvent, MicroState, Version=0.0.0.0,
+    m_TypeName: MicroState.Id.Components.StringAttr+ValueTypeEvent, MicroState, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &711807531
 GameObject:
@@ -431,16 +432,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 921115556}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1234e473d0f7a4bdc8c05c19226e2ca0, type: 3}
+  m_Script: {fileID: 11500000, guid: cfa380cc678ba453ea8616eb764406c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  StateInstance: {fileID: 0}
   StateId: TheState
   AttrId: Name
   InvokeWhenInactive: 0
-  ChangeEvent:
+  ValueEvent:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: MicroState.Id.Components.StringValue+ValueTypeEvent, MicroState, Version=0.0.0.0,
+    m_TypeName: MicroState.Id.Components.StringAttr+ValueTypeEvent, MicroState, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &931142781
 GameObject:
@@ -639,16 +641,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1093591874}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1234e473d0f7a4bdc8c05c19226e2ca0, type: 3}
+  m_Script: {fileID: 11500000, guid: cfa380cc678ba453ea8616eb764406c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  StateInstance: {fileID: 0}
   StateId: TheState
   AttrId: Name
   InvokeWhenInactive: 0
-  ChangeEvent:
+  ValueEvent:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: MicroState.Id.Components.StringValue+ValueTypeEvent, MicroState, Version=0.0.0.0,
+    m_TypeName: MicroState.Id.Components.StringAttr+ValueTypeEvent, MicroState, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1093591877
 MonoBehaviour:
