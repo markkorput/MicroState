@@ -39,6 +39,10 @@ namespace MicroState.Id
 			}
 		}
 
+		private class MasterStateInstance : IdStateInstance<MasterData, MasterState> {}
+		private class PersonLinkStateInstance : IdStateProxyInstance<PersonLinkData, PersonLinkState, MasterData, MasterState>{}
+
+
 		[Test]
 		public void IdStateProxyForwardOriginChangeNotifications()
 		{
@@ -65,21 +69,23 @@ namespace MicroState.Id
 			Assert.AreEqual(string.Join(", ", values), "Cal, Cat");
 		}
 
+
+
 		[UnityTest]
 		public IEnumerator IdStateProxyInstance()
 		{
-			// var entity = new GameObject("IdstateProxyInstance");			
-			// var masterStateInstance = entity.AddComponent<IdStateInstance<MasterData, MasterState>>();
-			// var personStateInstance = entity.AddComponent<IdStateProxyInstance<PersonLinkData, PersonLinkState, MasterData, MasterState>>();
-			// personStateInstance.Origin = masterStateInstance;
+			var entity = new GameObject("IdstateProxyInstance");			
+			var masterStateInstance = entity.AddComponent<MasterStateInstance>();
+			var personStateInstance = entity.AddComponent<PersonLinkStateInstance>();
+			personStateInstance.Origin = masterStateInstance;
 			yield return null;
 
-			// List<string> values = new List<string>();
-			// personStateInstance.State.OnChange += (state) => values.Add(state.GetAttr<string>("name").Value);
-			// Assert.AreEqual(string.Join(", ", values), "");
-			// masterStateInstance.State.DataInstance.names = new string[] { "Abi", "Bob", "Cat" };
-			// yield return null; // let master's state instance update method pickup change
-			// Assert.AreEqual(string.Join(", ", values), "Abi");
+			List<string> values = new List<string>();			
+			personStateInstance.State.OnChange += (state) => values.Add(state.GetAttr<string>("name").Value);
+			Assert.AreEqual(string.Join(", ", values), "");
+			masterStateInstance.State.DataInstance.names = new string[] { "Abi", "Bob", "Cat" };
+			masterStateInstance.State.NotifyChange();
+			Assert.AreEqual(string.Join(", ", values), "Abi");
 		}
 	}
 }
