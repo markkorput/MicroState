@@ -50,5 +50,19 @@ namespace MicroState.Id
                     if (this.origin != null && setter != null) setter.Invoke(data, this.origin.DataInstance, val);
                 });
         }
+
+        protected void CreateStateAttr<ValT>(string id,
+            System.Func<IdState<DataType>, IdState<OriginType>, ValT> getter,
+            System.Action<IdState<DataType>, IdState<OriginType>, ValT> setter = null) {
+
+            base.CreateAttr(id,
+                (data) => {
+                    if (this.origin == null) return default(ValT);
+                    return getter.Invoke(this, this.origin);
+                },
+                (data,val) => {
+                    if (this.origin != null && setter != null) setter.Invoke(this, this.origin, val);
+                });
+        }
     }
 }

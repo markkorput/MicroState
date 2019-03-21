@@ -69,8 +69,6 @@ namespace MicroState.Id
 			Assert.AreEqual(string.Join(", ", values), "Cal, Cat");
 		}
 
-
-
 		[UnityTest]
 		public IEnumerator IdStateProxyInstance()
 		{
