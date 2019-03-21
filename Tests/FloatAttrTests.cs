@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace MicroState.Id
 {
-	public class FloatValueTests
+	public class FloatAttrTests
 	{
 
 		private class TestClass
@@ -35,13 +35,6 @@ namespace MicroState.Id
 		{
 		}
 
-		//[Test]
-		//public void NewTestScriptSimplePasses() {
-		//    // Use the Assert class to test conditions.
-		//}
-
-		// A UnityTest behaves like a coroutine in PlayMode
-		// and allows you to yield null to skip a frame in EditMode
 		[UnityTest]
 		public IEnumerator TypicalUsage()
 		{
@@ -55,16 +48,16 @@ namespace MicroState.Id
 
 			var child = new GameObject();
 			child.transform.SetParent(parent.transform);
-			var floatval = child.AddComponent<Components.FloatValue>();
-			floatval.StateId = "TheState";
-			floatval.AttrId = "Score";         
+			var floatattr = child.AddComponent<Components.FloatAttr>();
+			floatattr.StateId = "TheState";
+			floatattr.AttrId = "Score";         
 
             // register listener
 			float valsum = 0.0f;
-			floatval.ChangeEvent.AddListener((val) => valsum += val);
+			floatattr.ValueEvent.AddListener((val) => valsum += val);
 
 			Assert.AreEqual(valsum, 0.0f);
-			yield return null; // This invoked the Start method on the floatval component         
+			yield return null; // This invoked the Start method on the floatattr component         
 			Assert.AreEqual(valsum, 1f);         
          
 			stateinst.State.GetAttr<float>("Score").Value = 2f;
@@ -85,15 +78,15 @@ namespace MicroState.Id
 
 			var child = new GameObject();
             child.transform.SetParent(parent.transform);
-            var floatval = child.AddComponent<Components.FloatValue>();
-            floatval.StateId = "TheState";
-            floatval.AttrId = "Score";
+            var floatattr = child.AddComponent<Components.FloatAttr>();
+            floatattr.StateId = "TheState";
+            floatattr.AttrId = "Score";
          
 			int counter = 0;
-			floatval.ChangeEvent.AddListener((val) => counter += 1);
+			floatattr.ValueEvent.AddListener((val) => counter += 1);
 			yield return null;
 			Assert.AreEqual(counter, 1);
-			Assert.AreEqual(floatval.InvokeWhenInactive, false);
+			Assert.AreEqual(floatattr.InvokeWhenInactive, false);
 			child.SetActive(false);
 			Assert.AreEqual(counter, 1);
 			stateinst.State.GetAttr<float>("Score").Value += 1;         
@@ -106,7 +99,7 @@ namespace MicroState.Id
 			yield return null;
 			Assert.AreEqual(counter, 2);
          
-			floatval.InvokeWhenInactive = true;
+			floatattr.InvokeWhenInactive = true;
 			child.SetActive(false);
             Assert.AreEqual(counter, 2);
             stateinst.State.GetAttr<float>("Score").Value += 1;

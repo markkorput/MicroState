@@ -7,12 +7,14 @@ namespace MicroState.Id
 {
 	public class IdStateTests
 	{
+		// Our custom DATA class (plain C-Sharp class with our data attributes)
 		private class RandomClass
 		{
 			public int Number = 0;
 			public string Name = "";
 		}
 
+		// Our custom STATE class, which is an interface to an instance of our DATA class
 		private class RandomClassState : IdState<RandomClass>
 		{
 			public RandomClassState() : this(null) { }
