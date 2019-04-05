@@ -15,6 +15,10 @@ namespace MicroState.Id
 		[SerializeField]
 		protected DataT data;
 
+		#if UNITY_EDITOR
+		public bool DetectUpdateChanges = true;
+		#endif
+
 		private IdStateT state_;
 		private IdStateChangeChecker<DataT> changeChecker = null;
 
@@ -55,7 +59,7 @@ namespace MicroState.Id
         {
 			// we don't perform this operation inside the OnGUI method, because that causes a lot of
 			// "Assertion failed on expression: 'IsActive() || GetRunInEditMode()'" log errors
-            if (guiFlag)
+            if (guiFlag && DetectUpdateChanges)
             {
                 State.setDataInstance(this.data);
                 // if (this.state_ != null) this.state_.setDataInstance(this.data);
