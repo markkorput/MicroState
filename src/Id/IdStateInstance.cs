@@ -14,10 +14,8 @@ namespace MicroState.Id
 	{
 		[SerializeField]
 		protected DataT data;
-
-		#if UNITY_EDITOR
-		public bool DetectUpdateChanges = true;
-		#endif
+		[Tooltip("When Enabled, will check the state for unnotified changed every update. COULD POTENTIALLY HAVE BIG IMPACT ON PERFORMANCE.")]
+		public bool CheckForChangedOnUpdate = false;
 
 		private IdStateT state_;
 		private IdStateChangeChecker<DataT> changeChecker = null;
@@ -54,25 +52,30 @@ namespace MicroState.Id
 			return state;
 		}
 
+
+		private void Update()
+		{
+			#if UNITY_EDITOR
+				// we don't perform this operation inside the OnGUI method, because that causes a lot of
+				// "Assertion failed on expression: 'IsActive() || GetRunInEditMode()'" log errors
+				if (guiFlag && CheckForChangedOnUpdate)
+			#else
+				if (CheckForChangedOnUpdate)
+			#endif
+				{
+						State.setDataInstance(this.data);
+						// if (this.state_ != null) this.state_.setDataInstance(this.data);
+						this.changeChecker.Update();
+				}
+		}
+
 #if UNITY_EDITOR
-        private void Update()
-        {
-			// we don't perform this operation inside the OnGUI method, because that causes a lot of
-			// "Assertion failed on expression: 'IsActive() || GetRunInEditMode()'" log errors
-            if (guiFlag && DetectUpdateChanges)
-            {
-                State.setDataInstance(this.data);
-                // if (this.state_ != null) this.state_.setDataInstance(this.data);
-                this.changeChecker.Update();
-            }
-        }
+		bool guiFlag = false;
 
-        bool guiFlag = false;
-
-        private void OnGUI()
-        {
-            guiFlag = true;
-        }
+		private void OnGUI()
+		{
+				guiFlag = true;
+		}
 #endif
 	}
 }
