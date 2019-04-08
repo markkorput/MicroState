@@ -19,6 +19,10 @@ namespace MicroState.Id
             this.SetOrigin(null);
         }
 
+        public IdState<OriginType> Origin { get {
+            return this.origin;
+        } }
+
         public void SetOrigin(IdState<OriginType> origin) {
             if (this.isOriginProxyRegistered) {
                 this.origin.OnChange -= this.OnOriginChange;
