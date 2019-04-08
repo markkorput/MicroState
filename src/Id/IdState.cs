@@ -93,6 +93,17 @@ namespace MicroState.Id
                 ));
         }
 
+        protected void CreateStateAttr<ValT>(string id,
+            System.Func<IdState<StateT>, ValT> getter,
+            System.Action<IdState<StateT>, ValT> setter = null) {
+
+            this.CreateAttr<ValT>(id,
+                (data) => getter.Invoke(this),
+                (data,val) => {
+                    if (setter != null) setter.Invoke(this, val);
+                });
+        }
+
         // Creates Read-Only Virtual Attribute
         protected void CreateAttr<ValT>(string id, System.Func<StateT, ValT> getter) {
             this.CreateAttr(id, getter, null);
