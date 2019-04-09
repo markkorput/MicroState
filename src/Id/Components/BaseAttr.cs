@@ -18,6 +18,7 @@ namespace MicroState.Id.Components
 
 		[Header("Behaviour")]
 		public bool InvokeWhenInactive = false;
+		public bool InvokeStartValue = true;
 	}
 
 	public class BaseAttr<T> : BaseAttrBase {
@@ -45,6 +46,7 @@ namespace MicroState.Id.Components
 		private void Start()
 		{
 			this.AttrListener.ChangeEvent.AddListener(this.OnValue);
+			if (this.InvokeStartValue) this.OnValue(this.AttrListener.Value);
 		}
 
 		private void OnDestroy()
