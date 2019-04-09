@@ -15,8 +15,11 @@ namespace MicroState.Id
 
 		override protected IdStateT CreateState(DataT data) {
 			var state = base.CreateState(data);
-			if (this.Origin != null)
+			if (this.Origin != null) {
 				state.SetOrigin(((IdStateInstance<OriginDataT, OriginStateT>)this.Origin).State);
+			} else {
+				Debug.Log("[IdStateProxyInstance.CreateState] NO ORIGIN");
+			}
 			return state;
 		}
 	}

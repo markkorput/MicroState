@@ -43,9 +43,11 @@ namespace MicroState.Id
         {
             get
             {
-                if (this.stateBase_ != null) return this.stateBase_;
-                var stateinst = FindStateInstance(this.StateId);
-                if (stateinst != null) this.stateBase_ = stateinst.GetState();
+                if (this.stateBase_ == null) {
+                    var stateinst = FindStateInstance(this.StateId);
+                    if (stateinst != null) this.stateBase_ = stateinst.GetState();
+                    else Debug.Log("[AttrRef.StateBase] could not find state instance");
+                }
                 return this.stateBase_;
             }
         }
@@ -54,10 +56,11 @@ namespace MicroState.Id
         {
             get
             {
-                if (this.valueAttr_ != null) return this.valueAttr_;
-                var statebase = this.StateBase;
-                if (statebase == null) return null;
-                this.valueAttr_ = statebase.GetAttr<ValueT>(this.AttrId);
+                if (this.valueAttr_ == null) {
+                    var statebase = this.StateBase;
+                    if (statebase != null) this.valueAttr_ = statebase.GetAttr<ValueT>(this.AttrId);
+                    else Debug.Log("[AttrRef.ValueAttr] could not find state instance");
+                }
                 return this.valueAttr_;
             }
         }
