@@ -15,7 +15,7 @@ namespace MicroState.Id
 			return this.attrCreator == null ? null : this.attrCreator.Invoke();
         }
     }
-   
+
     public class AttrDef<StateT, ValT> : BaseAttrDef
     {
         public System.Func<StateT, ValT> getter;
@@ -32,7 +32,7 @@ namespace MicroState.Id
 			this.attrCreator = attrCreator;         
 		}
     }
-   
+
 	public class BaseAttr
 	{
 		protected BaseAttrDef attrDef;
@@ -44,7 +44,7 @@ namespace MicroState.Id
 			return false;
 		}
 	}
-   
+
 	public class ValueAttr<ValT> : BaseAttr {
 
 		private System.Func<ValT> getter;
@@ -80,7 +80,7 @@ namespace MicroState.Id
             return this.Value.Equals(other.Value);
         }
 	}
-   
+
     /// <summary>
 	/// Attr binds an data-object (instance) to a ValueAttr, making the instance
 	/// the source for ValueAttr's getter and the destination for ValueAttr's setter

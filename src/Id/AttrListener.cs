@@ -5,8 +5,10 @@ using UnityEngine.Events;
 
 namespace MicroState.Id
 {
-	public class AttrListener<ValueT> : AttrRef<ValueT>, System.IDisposable
+	public class AttrListener<ValueT> : System.IDisposable
 	{
+		private AttrRef<ValueT> attrRef = null;
+
 		public class ValueEventType : UnityEvent<ValueT> { }
 		private ValueEventType valueEvent_ = null;
 		private ValueEventType changeEvent_ = null;
@@ -32,12 +34,14 @@ namespace MicroState.Id
 			}
 		}
 
-		public AttrListener(IdStateBase state, string attrid) : base(state, attrid)
+		public AttrListener(IdStateBase state, string attrid)
 		{
+			this.attrRef = new AttrRef<ValueT>(state, attrid);
 		}
 
-		public AttrListener(string stateid, string attrid, GameObject gameObject = null) : base(stateid, attrid, gameObject)
+		public AttrListener(string stateid, string attrid, GameObject gameObject = null)
 		{
+			this.attrRef = new AttrRef<ValueT>(stateid, attrid, gameObject);
 		}
 
 		public void Dispose()
@@ -88,5 +92,22 @@ namespace MicroState.Id
 					});
 			}
 		}
+
+		#region AttrRef Proxies
+		public ValueAttr<ValueT> ValueAttr { get { 
+			return this.attrRef.ValueAttr;
+		}}
+
+		public IdStateBase StateBase { get { return this.attrRef.StateBase; }}
+
+		public ValueT Get() { return this.attrRef.Get(); }
+		public void Set(ValueT v) { this.attrRef.Set(v); }
+
+
+		public ValueT Value {
+				get { return this.Get(); }
+				set { this.Set(value); }
+		}
+		#endregion
 	}
 }

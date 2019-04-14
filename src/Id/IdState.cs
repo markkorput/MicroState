@@ -44,6 +44,10 @@ namespace MicroState.Id
                 batchChanges = 0;
             }
         }
+
+        protected bool SupportsReusableAttrListeners = true;
+
+        protected Dictionary<string, System.Object> ResuableAttrListeners = null;
     }
 
     public class IdState<StateT> : IdStateBase
@@ -107,6 +111,27 @@ namespace MicroState.Id
         // Creates Read-Only Virtual Attribute
         protected void CreateAttr<ValT>(string id, System.Func<StateT, ValT> getter) {
             this.CreateAttr(id, getter, null);
+        }
+
+        public AttrListener<ValueT> GetResuableAttrListener<ValueT>(string id) {
+            if (!this.SupportsReusableAttrListeners) return null;
+            
+            // lazy-init
+            if (this.ResuableAttrListeners == null) {
+                this.ResuableAttrListeners = new Dictionary<string, System.Object>();
+            }
+
+            // find existing
+            System.Object listener = null;
+            if (this.ResuableAttrListeners.TryGetValue(id, out listener)) {
+                return (AttrListener<ValueT>)listener;
+            }
+
+            // var attRef = (System.Object)GetAttr<ValueT>(id);
+            // var attrListener = new AttrListener(attrRef);
+            // this.ResuableAttrListeners.Add(id, listener);
+            // return (AttrListenerlistener;
+            return null;
         }
 
         public override ValueAttr<ValT> GetAttr<ValT>(string id)
