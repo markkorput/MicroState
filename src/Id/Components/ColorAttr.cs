@@ -15,7 +15,6 @@ namespace MicroState.Id.Components
 
 		override protected void OnValue(Color v)
 		{
-			if (!(this.InvokeWhenInactive || this.isActiveAndEnabled)) return;
 			this.ValueEvent.Invoke(v);
 		}
 	}

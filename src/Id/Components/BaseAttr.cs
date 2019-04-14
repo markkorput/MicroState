@@ -18,7 +18,8 @@ namespace MicroState.Id.Components
 
 		[Header("Behaviour")]
 		public bool InvokeWhenInactive = false;
-		public bool InvokeStartValue = true;
+		public bool InvokeStartValue = false;
+		public bool InvokeOnEnable = true;
 	}
 
 	public class BaseAttr<T> : BaseAttrBase {
@@ -43,10 +44,24 @@ namespace MicroState.Id.Components
 			}
 		}
 
+		public T Value { get { return this.Get(); } set { this.Set(value); }}
+		private bool bRegistered = false;
+
 		private void Start()
 		{
-			this.AttrListener.ChangeEvent.AddListener(this.OnValue);
-			if (this.InvokeStartValue) this.OnValue(this.AttrListener.Value);
+			if (!bRegistered) {
+				this.AttrListener.ChangeEvent.AddListener(this.OnValueIf);
+				this.bRegistered = true;
+			}
+			if (this.InvokeStartValue && !this.InvokeOnEnable) this.OnValue(this.AttrListener.Value);
+		}
+
+		private void OnEnable() {
+			if (!bRegistered) {
+				this.AttrListener.ChangeEvent.AddListener(this.OnValueIf);
+				this.bRegistered = true;
+			}
+			if (this.InvokeOnEnable) this.OnValue(this.AttrListener.Value);
 		}
 
 		private void OnDestroy()
@@ -58,6 +73,7 @@ namespace MicroState.Id.Components
 			}
 		}
 
+		/// only invoked when active of inactive invoked are allowed
 		protected virtual void OnValue(T v)
 		{
 			// if (!(this.InvokeWhenInactive || this.isActiveAndEnabled)) return;
@@ -66,8 +82,14 @@ namespace MicroState.Id.Components
 			// if (evt != null) evt.Invoke(); // In unity 2018.3 this started giving NullReferenceExceptions in PlayMode tests...
 		}
 
+		protected void OnValueIf(T v) {
+			if (this.InvokeWhenInactive || this.isActiveAndEnabled) {
+				this.OnValue(v);
+			}
+		}
+
 		#region Public Action Methods
-			public void InvokeValue() { this.OnValue(this.AttrListener.Value); }
+			public void InvokeValue() { this.OnValueIf(this.AttrListener.Value); }
 			public void Set(T v) { this.AttrListener.Set(v); }
 			public T Get() { return this.AttrListener.Value; }
 		#endregion

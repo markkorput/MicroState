@@ -51,19 +51,21 @@ namespace MicroState.Id
 
 			// create our state-attribute
 			var child = new GameObject();
+			child.SetActive(false);
 			child.transform.SetParent(parent.transform);
 			var floatattr = child.AddComponent<Components.FloatAttr>();
 			// identify our state by its string-based ID
 			floatattr.StateId = "TheState";
 			floatattr.AttrId = "Score";         
 
-            // register listener
+			// register listener
 			float valsum = 0.0f;
 			floatattr.ValueEvent.AddListener((val) => valsum += val);
-
 			Assert.AreEqual(valsum, 0.0f);
-			yield return null; // This invoked the Start method on the floatattr component         
-			Assert.AreEqual(valsum, 1f);         
+
+			child.SetActive(true);
+			yield return null; // This invoked the Start method on the floatattr component
+			Assert.AreEqual(valsum, 1f);
          
 			stateinst.State.GetAttr<float>("Score").Value = 2f;
 			Assert.AreEqual(valsum, 3f);
@@ -84,15 +86,19 @@ namespace MicroState.Id
 
 			// setup attr
 			var child = new GameObject();
+			child.SetActive(false);
             child.transform.SetParent(parent.transform);
             var floatattr = child.AddComponent<Components.FloatAttr>();
             floatattr.StateId = "TheState";
             floatattr.AttrId = "Score";
+			floatattr.InvokeOnEnable = false;
+			floatattr.InvokeStartValue = true;
+			int counter = 0;
+			floatattr.ValueEvent.AddListener((val) => counter += 1);
+			child.SetActive(true);
 
 			// check default behaviour
 			Assert.AreEqual(floatattr.InvokeWhenInactive, false); // default
-			int counter = 0;
-			floatattr.ValueEvent.AddListener((val) => counter += 1);
 			yield return null;
 			Assert.AreEqual(counter, 1);
 
@@ -142,10 +148,12 @@ namespace MicroState.Id
 			// setup attr
 			var child = new GameObject();
             child.transform.SetParent(parent.transform);
+			child.SetActive(false);
             var floatattr = child.AddComponent<Components.FloatAttr>();
 			floatattr.StateInstance = stateinst; // #1, NOT #2
             floatattr.StateId = "TheState2"; // #2m NOT #1 (conflicting with) StateInstance
             floatattr.AttrId = "Score";
+			child.SetActive(true);
 
 			Assert.AreEqual(floatattr.Get(), 2f);
 			yield return null;

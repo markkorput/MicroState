@@ -12,15 +12,13 @@ namespace MicroState.Id.Components
 		[System.Serializable]
 		public class ValueTypeEvent : UnityEvent<bool> { }
 		public ValueTypeEvent ChangeEvent = new ValueTypeEvent();
-		public UnityEvent TrueEvent;
-		public UnityEvent FalseEvent;
+		public UnityEvent TrueEvent = new UnityEvent();
+		public UnityEvent FalseEvent = new UnityEvent();
 
 		override protected void OnValue(bool v)
 		{
-			if (!(this.InvokeWhenInactive || this.isActiveAndEnabled)) return;
 			this.ChangeEvent.Invoke(v);
-			var evt = (v ? this.TrueEvent : this.FalseEvent);
-			if (evt != null) evt.Invoke(); // In unity 2018.3 this started giving NullReferenceExceptions in PlayMode tests...
+			(v ? this.TrueEvent : this.FalseEvent).Invoke();
 		}
 
 		#region Public Action Methods
