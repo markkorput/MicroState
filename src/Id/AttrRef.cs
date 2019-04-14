@@ -65,24 +65,22 @@ namespace MicroState.Id
             }
         }
 
+        public ValueT Value {
+            get { return this.Get(); }
+            set { this.Set(value); }
+        }
+
+        public ValueT Get() {
+            var attr = this.ValueAttr;
+            if (attr == null) return default(ValueT);
+            return attr.Value;
+        }
+
         public void Set(ValueT val)
         {
             var attr = this.ValueAttr;
             if (attr == null) return;
             attr.Value = val;
-        }
-
-        public ValueT Value {
-            get
-            {
-                var attr = this.ValueAttr;
-                if (attr == null) return default(ValueT);
-                return attr.Value;
-            }
-
-            set {
-                this.Set(value);
-            }
         }
 	}
 }
