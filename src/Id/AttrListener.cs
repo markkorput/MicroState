@@ -44,6 +44,11 @@ namespace MicroState.Id
 			this.attrRef = new AttrRef<ValueT>(stateid, attrid, gameObject);
 		}
 
+		public AttrListener(AttrRef<ValueT> attrRef)
+		{
+			this.attrRef = attrRef;
+		}
+
 		public void Dispose()
 		{
 			foreach (var func in disposeFuncs) func.Invoke();
@@ -83,6 +88,8 @@ namespace MicroState.Id
 			var state = this.StateBase;
 			if (state != null)
 			{
+				// state.GetResuableAttrListener<ValueT>()
+
 				state.ChangeEvent += this.OnStateChange;
 
 				// register cleanup func

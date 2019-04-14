@@ -47,7 +47,9 @@ namespace MicroState.Id
 
         protected bool SupportsReusableAttrListeners = true;
 
-        protected Dictionary<string, System.Object> ResuableAttrListeners = null;
+        public virtual AttrListener<ValueT> GetResuableAttrListener<ValueT>(string id) {
+            return null;
+        }
     }
 
     public class IdState<StateT> : IdStateBase
@@ -113,7 +115,9 @@ namespace MicroState.Id
             this.CreateAttr(id, getter, null);
         }
 
-        public AttrListener<ValueT> GetResuableAttrListener<ValueT>(string id) {
+        protected Dictionary<string, System.Object> ResuableAttrListeners = null;
+
+        public override AttrListener<ValueT> GetResuableAttrListener<ValueT>(string id) {
             if (!this.SupportsReusableAttrListeners) return null;
             
             // lazy-init
@@ -127,11 +131,14 @@ namespace MicroState.Id
                 return (AttrListener<ValueT>)listener;
             }
 
-            // var attRef = (System.Object)GetAttr<ValueT>(id);
-            // var attrListener = new AttrListener(attrRef);
-            // this.ResuableAttrListeners.Add(id, listener);
-            // return (AttrListenerlistener;
-            return null;
+            // create reusable AttrListener
+            var valAttrRef = GetAttr<ValueT>(id);
+            var attrRef = new AttrRef<ValueT>(valAttrRef);
+            var attrListener = new AttrListener<ValueT>(attrRef);
+            // save for later reference
+            this.ResuableAttrListeners.Add(id, (System.Object)listener);
+
+            return attrListener;
         }
 
         public override ValueAttr<ValT> GetAttr<ValT>(string id)

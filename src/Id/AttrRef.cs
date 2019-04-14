@@ -24,6 +24,10 @@ namespace MicroState.Id
 			this.gameObject = gameObject;
 		}
 
+        public AttrRef(ValueAttr<ValueT> valattr) {
+            this.valueAttr_  = valattr;
+        }
+
         private IdStateInstanceBase FindStateInstance(string id)
         {
             return new List<IdStateInstanceBase>(
