@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace MicroState.Id
 {
-	public class BoolComponentsTests
+	public class BoolAttrTests
 	{
 
 		private class TestClass
@@ -20,28 +20,15 @@ namespace MicroState.Id
 			public TestClassState(TestClass instance) : base(instance)
 			{
 				base.CreateAttr<bool>("Flag",
-                    (inst) =>
-                    {
-                        return inst.Flag;
-                    },
-                    (inst, val) =>
-                    {
-                        inst.Flag = val;
-                    });
+                    (inst) => inst.Flag,
+                    (inst, val) => inst.Flag = val);
 			}
 		}
       
 		private class TestClassIdStateInstance : IdStateInstance<TestClass, TestClassState>
 		{
 		}
-      
-		//[Test]
-		//public void NewTestScriptSimplePasses() {
-		//    // Use the Assert class to test conditions.
-		//}
-      
-		// A UnityTest behaves like a coroutine in PlayMode
-		// and allows you to yield null to skip a frame in EditMode
+
 		[UnityTest]
 		public IEnumerator TypicalUsage()
 		{
@@ -57,9 +44,9 @@ namespace MicroState.Id
             child.transform.SetParent(parent.transform);
 			child.SetActive(false);
 
-            var bval = child.AddComponent<Components.BoolValue>();
+            var bval = child.AddComponent<Components.BoolAttr>();
 			child.SetActive(true);
-			bval.StateId = "TheState";
+			bval.StateInstance = stateinst;
 			bval.AttrId = "Flag";
 
 			// register listener
