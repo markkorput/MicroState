@@ -83,7 +83,7 @@ namespace MicroState.Id
                 // get current value
                 var curval = getter.Invoke(state);
                 // check for changes
-                bool change = !AreEqual(curval, val);
+                bool change = !BaseAttr.AreEqual(curval, val);
                 // apply original setter
                 if (setter != null) setter.Invoke(state, val);
                 // notify if there were changes
@@ -94,9 +94,14 @@ namespace MicroState.Id
                 new AttrDef<StateT, ValT>(
                     id,
                     getter,
-                    notifySetter, // setter,
-                    () => this.GetAttr<ValT>(id)
-                ));
+                    notifySetter,
+                    // attr creator func
+                    () => {
+                        return new ValueAttr<ValT>(
+                            () => getter.Invoke(this.Instance),
+                            (val) => notifySetter.Invoke(this.Instance, val),
+                            id);
+                    }));
         }
 
         protected void CreateStateAttr<ValT>(string id,
@@ -156,11 +161,7 @@ namespace MicroState.Id
             // if (this.Instance == null) return null;
             var def = (AttrDef<StateT, ValT>)AttrDefs.Find((attrdef) => attrdef.id.Equals(id));
             // return def == null ? null : new Attr<StateT, ValT>(this.Instance, (AttrDef<StateT, ValT>)def);
-            if (def == null) return null;
-
-            System.Func<ValT> getter = () => def.getter.Invoke(this.Instance);
-            System.Action<ValT> setter = (val) => def.setter.Invoke(this.Instance, val);
-            return new ValueAttr<ValT>(getter, setter, def);
+            return def == null ? null : (ValueAttr<ValT>)def.CreateAttr();
         }
 
         /// Used by editor class to fetch all available attribute IDs
@@ -173,18 +174,10 @@ namespace MicroState.Id
             return (from it in this.AttrDefs select it.CreateAttr()).ToArray();
         }
 
-        /// For attr value comparisons
-        public static bool AreEqual<T>(T a, T b)
-        {
-            if (a == null || b == null) return a == null && b == null;
-            return a.Equals(b);
-        }
-
         public new void NotifyChange() {
             if (this.OnChange != null) this.OnChange(this);
             base.NotifyChange();
         }
-
 
         // /// HACKY :/
         // public BaseAttr[] GetAttributes(StateT data)

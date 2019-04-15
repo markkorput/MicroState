@@ -64,10 +64,7 @@ namespace MicroState.Id
 			List<BaseAttrValue> attrvalues = new List<BaseAttrValue>();
 
 			BaseAttr[] attrs = state.GetAttributes();
-
-			for (int i = 0; i < attrs.Length; i++)
-            {
-				var attr = attrs[i];
+			foreach(var attr in attrs) {
 				if (attr.ValueType.Equals(((int)0).GetType()))
 				{
 					attrvalues.Add(new AttrValue<int>(((ValueAttr<int>)attr).Value));
