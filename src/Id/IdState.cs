@@ -151,10 +151,6 @@ namespace MicroState.Id
         //     def.setter.Invoke(this.Instance, val);
         // }
 
-        private StateT GetDataInstance() {
-            return this.Instance;
-        }
-
         public override ValueAttr<ValT> GetAttr<ValT>(string id)
         {
             // if (this.Instance == null) return null;
@@ -162,11 +158,8 @@ namespace MicroState.Id
             // return def == null ? null : new Attr<StateT, ValT>(this.Instance, (AttrDef<StateT, ValT>)def);
             if (def == null) return null;
 
-            System.Func<IdState<StateT>, StateT> dataFunc = (state) => state.Instance;
-
-            // def.getter.Invoke(this.instance);
-            System.Func<ValT> getter = () => def.getter.Invoke(this.GetDataInstance());
-            System.Action<ValT> setter = (val) => def.setter.Invoke(this.GetDataInstance(), val);
+            System.Func<ValT> getter = () => def.getter.Invoke(this.Instance);
+            System.Action<ValT> setter = (val) => def.setter.Invoke(this.Instance, val);
             return new ValueAttr<ValT>(getter, setter, def);
         }
 

@@ -34,6 +34,15 @@ namespace MicroState.EditTests {
             Assert.AreEqual(state.DataInstance.Name, "Bob");
             Assert.AreEqual(state.GetAttr<string>("Name").Value, "Bob");
         }
+
+        [Test]
+        public void SetDataInstanceTest() {
+            var state = new TestState();
+            state.GetAttr<string>("Name").Value = "Bob";
+            Assert.AreEqual(state.DataInstance.Name, "Bob");
+            state.setDataInstance(new TestData());
+            Assert.AreEqual(state.DataInstance.Name, "[no name]");
+        }
     }
 
     public class IdStateTests2 {
