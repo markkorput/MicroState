@@ -141,13 +141,36 @@ namespace MicroState.Id
             return attrListener;
         }
 
+        // public ValT GetValue<ValT>(string id) {
+        //     var def = (AttrDef<StateT, ValT>)AttrDefs.Find((attrdef) => attrdef.id.Equals(id));
+        //     return def.getter.Invoke(this.Instance);
+        // }
+
+        // public void SetValue<ValT>(string id, ValT val) {
+        //     var def = (AttrDef<StateT, ValT>)AttrDefs.Find((attrdef) => attrdef.id.Equals(id));
+        //     def.setter.Invoke(this.Instance, val);
+        // }
+
+        private StateT GetDataInstance() {
+            return this.Instance;
+        }
+
         public override ValueAttr<ValT> GetAttr<ValT>(string id)
         {
             // if (this.Instance == null) return null;
-            var def = AttrDefs.Find((attrdef) => attrdef.id.Equals(id));
-            return def == null ? null : new Attr<StateT, ValT>(this.Instance, (AttrDef<StateT, ValT>)def);
+            var def = (AttrDef<StateT, ValT>)AttrDefs.Find((attrdef) => attrdef.id.Equals(id));
+            // return def == null ? null : new Attr<StateT, ValT>(this.Instance, (AttrDef<StateT, ValT>)def);
+            if (def == null) return null;
+
+            System.Func<IdState<StateT>, StateT> dataFunc = (state) => state.Instance;
+
+            // def.getter.Invoke(this.instance);
+            System.Func<ValT> getter = () => def.getter.Invoke(this.GetDataInstance());
+            System.Action<ValT> setter = (val) => def.setter.Invoke(this.GetDataInstance(), val);
+            return new ValueAttr<ValT>(getter, setter, def);
         }
 
+        /// Used by editor class to fetch all available attribute IDs
         public override string[] GetAttributeIds()
         {
             return (from def in this.AttrDefs select def.id).ToArray();
@@ -157,35 +180,39 @@ namespace MicroState.Id
             return (from it in this.AttrDefs select it.CreateAttr()).ToArray();
         }
 
-        public BaseAttr[] GetAttributes(StateT data)
-        {
-            var original = this.Instance;
-            this.Instance = data;
-            var attrs = this.GetAttributes();
-            this.Instance = original;
-            return attrs;
-        }
-
+        /// For attr value comparisons
         public static bool AreEqual<T>(T a, T b)
         {
             if (a == null || b == null) return a == null && b == null;
             return a.Equals(b);
         }
 
-        public bool AreEqual(StateT a, StateT b) {
-            var attrsA = this.GetAttributes(a);
-            var attrsB = this.GetAttributes(b);
-
-            for (int i = 0; i < attrsA.Length; i++) {
-                if (!attrsA[i].IsEqual(attrsB[i])) return false;
-            }
-
-            return true;
-        }
-
         public new void NotifyChange() {
             if (this.OnChange != null) this.OnChange(this);
             base.NotifyChange();
         }
+
+
+        // /// HACKY :/
+        // public BaseAttr[] GetAttributes(StateT data)
+        // {
+        //     var original = this.Instance;
+        //     this.Instance = data;
+        //     var attrs = this.GetAttributes();
+        //     this.Instance = original;
+        //     return attrs;
+        // }
+
+
+        // public bool AreEqual(StateT a, StateT b) {
+        //     var attrsA = this.GetAttributes(a);
+        //     var attrsB = this.GetAttributes(b);
+
+        //     for (int i = 0; i < attrsA.Length; i++) {
+        //         if (!attrsA[i].IsEqual(attrsB[i])) return false;
+        //     }
+
+        //     return true;
+        // }
     }
 }

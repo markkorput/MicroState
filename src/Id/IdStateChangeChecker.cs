@@ -69,9 +69,13 @@ namespace MicroState.Id
             {
 				var attr = attrs[i];
 				if (attr.ValueType.Equals(((int)0).GetType()))
-				{               
-					attrvalues.Add(new AttrValue<int>(((Attr<DataT, int>)attr).Value));
-				}     
+				{
+					attrvalues.Add(new AttrValue<int>(((ValueAttr<int>)attr).Value));
+				}   
+
+				// if (attr.ValueType.Equals(((string)"").GetType()))   {
+				// 	attrvalues.Add(new AttrValue<string>(((ValueAttr<DataT, string>)attr).Value));
+				// }
 
                  // TODO support other types
             }
