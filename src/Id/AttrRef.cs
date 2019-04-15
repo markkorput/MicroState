@@ -8,7 +8,7 @@ namespace MicroState.Id
 	{
 		public string StateId { get; private set; }
 		public string AttrId { get; private set; }
-      
+
 		private GameObject gameObject = null;      
 		private IdStateBase stateBase_ = null;
 		private ValueAttr<ValueT> valueAttr_ = null;
@@ -37,6 +37,7 @@ namespace MicroState.Id
                         .Find((stateinstance) => stateinstance.Id.Equals(id));
         }
 
+        /// Public, so the AttrRefEditor class has access to it
 		public IdStateInstanceBase StateInstanceBase {
 			get {
 				return this.FindStateInstance(this.StateId);
@@ -67,24 +68,6 @@ namespace MicroState.Id
                 }
                 return this.valueAttr_;
             }
-        }
-
-        public ValueT Value {
-            get { return this.Get(); }
-            set { this.Set(value); }
-        }
-
-        public ValueT Get() {
-            var attr = this.ValueAttr;
-            if (attr == null) return default(ValueT);
-            return attr.Value;
-        }
-
-        public void Set(ValueT val)
-        {
-            var attr = this.ValueAttr;
-            if (attr == null) return;
-            attr.Value = val;
         }
 	}
 }

@@ -52,7 +52,7 @@ namespace MicroState.Id.Components
         }
 
 		#region Public Action Methods
-        public void Set(int v) { this.AttrListener.Set(v); }
+        public void Set(int v) { this.AttrListener.Value = v; }
 
 		public void InvokeValue(bool alsoWhenInactive) {
 			if (this.isActiveAndEnabled || alsoWhenInactive)

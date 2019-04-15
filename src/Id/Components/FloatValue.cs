@@ -52,7 +52,7 @@ namespace MicroState.Id.Components
         }
 
 		#region Public Action Methods
-        public void Set(float v) { this.AttrListener.Set(v); }
+        public void Set(float v) { this.AttrListener.Value = v; }
         #endregion
     }
    

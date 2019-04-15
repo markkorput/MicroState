@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace MicroState.Id
 {
-	public class BaseAttrDef
+    // AttrDef is a ValueAttr producing 
+	public class AttrDef
     {
         public string id;
-        public System.Type ValueType;
       
 		public System.Func<BaseAttr> attrCreator;
       
@@ -14,22 +14,34 @@ namespace MicroState.Id
         {
 			return this.attrCreator == null ? null : this.attrCreator.Invoke();
         }
+
+        public AttrDef (string id, System.Func<BaseAttr> attrCreator) {
+            this.id = id; 
+            this.attrCreator = attrCreator;
+        }
     }
 
-    public class AttrDef<DataT, ValT> : BaseAttrDef
-    {
-        public System.Func<DataT, ValT> getter;
-        public System.Action<DataT, ValT> setter;
+    // public class AttrDef<DataT, ValT> : BaseAttrDef
+    // {
+    //     private System.Func<DataT, ValT> getter;
+    //     private System.Action<DataT, ValT> setter;
+
+    //     // public AttrDef(string i, System.Func<DataT, ValT> g, System.Action<DataT, ValT> s)
+    //     // {
+    //     //     id = i; 
+    //     //     getter = g;
+    //     //     setter = s;
+    //     // }
       
-        public AttrDef(string i, System.Func<DataT, ValT> g, System.Action<DataT, ValT> s)
-        {
-            id = i; getter = g; setter = s;
-            this.ValueType = getter.Method.ReturnType;
-        }
-      
-		public AttrDef(string i, System.Func<DataT, ValT> g, System.Action<DataT, ValT> s, System.Func<BaseAttr> attrCreator)
-			: this(i, g, s) {
-			this.attrCreator = attrCreator;         
-		}
-    }
+	// 	// public AttrDef(string i, System.Func<DataT, ValT> g, System.Action<DataT, ValT> s, System.Func<BaseAttr> attrCreator) {
+    //     //     base.id = i; 
+    //     //     base.attrCreator = attrCreator;
+    //     //     getter = g;
+    //     //     setter = s;
+	// 	// }
+    //     public AttrDef (string id, System.Func<BaseAttr> attrCreator) {
+    //         base.id = id; 
+    //         base.attrCreator = attrCreator;
+    //     }
+    // }
 }

@@ -26,7 +26,8 @@ namespace MicroState.Id
         }
 	}
 
-	/// A ValueAttrs is basically a getter and a setter
+	/// A ValueAttrs is bundles logic to fetch (getter) and write (setter)
+	/// the value of an attribute of any type, and compair its value with another attr
 	public class ValueAttr<ValT> : BaseAttr {
 
 		private System.Func<ValT> getter;
@@ -50,7 +51,6 @@ namespace MicroState.Id
 
 		public override bool IsEqual(BaseAttr other)
         {
-
             return BaseAttr.AreEqual(this.Value, ((ValueAttr<ValT>)other).Value);
         }
 	}

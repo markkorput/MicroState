@@ -14,8 +14,7 @@ namespace MicroState.Id
 		private ValueEventType changeEvent_ = null;
 
 		private List<System.Action> disposeFuncs = new List<System.Action>();
-		private ValueT lastValue;
-		private bool isFirstValue = true;
+		private ValueChangeChecker<ValueT> changeChecker = new ValueChangeChecker<ValueT>();
 
 		public ValueEventType ValueEvent
 		{
@@ -25,6 +24,7 @@ namespace MicroState.Id
 				return this.valueEvent_;
 			}
 		}
+
 		public ValueEventType ChangeEvent
 		{
 			get
@@ -34,14 +34,10 @@ namespace MicroState.Id
 			}
 		}
 
-		public AttrListener(IdStateBase state, string attrid)
-		{
-			this.attrRef = new AttrRef<ValueT>(state, attrid);
+		public AttrListener(IdStateBase state, string attrid) : this(new AttrRef<ValueT>(state, attrid)) {
 		}
 
-		public AttrListener(string stateid, string attrid, GameObject gameObject = null)
-		{
-			this.attrRef = new AttrRef<ValueT>(stateid, attrid, gameObject);
+		public AttrListener(string stateid, string attrid, GameObject gameObject) : this (new AttrRef<ValueT>(stateid, attrid, gameObject)) {
 		}
 
 		public AttrListener(AttrRef<ValueT> attrRef)
@@ -55,29 +51,22 @@ namespace MicroState.Id
 			this.disposeFuncs.Clear();
 		}
 
-		public void InvokeValue()
-		{
-			if (this.valueEvent_ == null) this.StartListening();
-			this.OnStateChange();
-		}
+		// public void InvokeValue()
+		// {
+		// 	if (this.valueEvent_ == null) this.StartListening();
+		// 	this.OnStateChange();
+		// }
 
 		private void OnStateChange()
 		{
-			var attr = this.ValueAttr;
-			if (attr != null)
-			{
-				var val = attr.Value;
-				if (this.isFirstValue 
-					|| (this.lastValue == null && val != null)
-					|| (this.lastValue != null && !this.lastValue.Equals(val)))
-				{
-					this.changeEvent_.Invoke(val);
-				}
+			var attr = this.attrRef.ValueAttr;
+			if (attr == null) return;
 
-				this.valueEvent_.Invoke(val);
-				this.isFirstValue = false;
-				this.lastValue = val;
-			}
+			var val = attr.Value;
+			if (changeChecker.Check(val))
+				this.changeEvent_.Invoke(val);
+
+			this.valueEvent_.Invoke(val);
 		}
 
 		private void StartListening()
@@ -85,7 +74,7 @@ namespace MicroState.Id
 			this.valueEvent_ = new ValueEventType();
 			this.changeEvent_ = new ValueEventType();
 			// register attribute listener that trigger our value event
-			var state = this.StateBase;
+			var state = this.attrRef.StateBase;
 			if (state != null)
 			{
 				// state.GetResuableAttrListener<ValueT>()
@@ -95,25 +84,15 @@ namespace MicroState.Id
 				// register cleanup func
 				this.disposeFuncs.Add(() =>
 					{
-						this.StateBase.ChangeEvent -= this.OnStateChange;
+						this.attrRef.StateBase.ChangeEvent -= this.OnStateChange;
 					});
 			}
 		}
 
 		#region AttrRef Proxies
-		public ValueAttr<ValueT> ValueAttr { get { 
-			return this.attrRef.ValueAttr;
-		}}
-
-		public IdStateBase StateBase { get { return this.attrRef.StateBase; }}
-
-		public ValueT Get() { return this.attrRef.Get(); }
-		public void Set(ValueT v) { this.attrRef.Set(v); }
-
-
 		public ValueT Value {
-				get { return this.Get(); }
-				set { this.Set(value); }
+				get { return this.attrRef.ValueAttr.Value; }
+				set { this.attrRef.ValueAttr.Value = value; }
 		}
 		#endregion
 	}

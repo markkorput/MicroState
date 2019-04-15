@@ -90,7 +90,7 @@ namespace MicroState.Id.Components
 
 		#region Public Action Methods
 			public void InvokeValue() { this.OnValueIf(this.AttrListener.Value); }
-			public void Set(T v) { this.AttrListener.Set(v); }
+			public void Set(T v) { this.AttrListener.Value = v; }
 			public T Get() { return this.AttrListener.Value; }
 		#endregion
 	}

@@ -47,15 +47,15 @@ namespace MicroState.Id
 
         protected bool SupportsReusableAttrListeners = true;
 
-        public virtual AttrListener<ValueT> GetResuableAttrListener<ValueT>(string id) {
-            return null;
-        }
+        // public virtual AttrListener<ValueT> GetResuableAttrListener<ValueT>(string id) {
+        //     return null;
+        // }
     }
 
     public class IdState<StateT> : IdStateBase
     {
         private StateT Instance;
-        private List<BaseAttrDef> AttrDefs = new List<BaseAttrDef>();
+        private List<AttrDef> AttrDefs = new List<AttrDef>();
 
         public delegate void OnChangeDel(IdState<StateT> state);
         public event OnChangeDel OnChange;
@@ -91,11 +91,8 @@ namespace MicroState.Id
             });
 
             AttrDefs.Add(
-                new AttrDef<StateT, ValT>(
+                new AttrDef(
                     id,
-                    getter,
-                    notifySetter,
-                    // attr creator func
                     () => {
                         return new ValueAttr<ValT>(
                             () => getter.Invoke(this.Instance),
@@ -122,45 +119,33 @@ namespace MicroState.Id
 
         protected Dictionary<string, System.Object> ResuableAttrListeners = null;
 
-        public override AttrListener<ValueT> GetResuableAttrListener<ValueT>(string id) {
-            if (!this.SupportsReusableAttrListeners) return null;
+        // public override AttrListener<ValueT> GetResuableAttrListener<ValueT>(string id) {
+        //     if (!this.SupportsReusableAttrListeners) return null;
             
-            // lazy-init
-            if (this.ResuableAttrListeners == null) {
-                this.ResuableAttrListeners = new Dictionary<string, System.Object>();
-            }
+        //     // lazy-init
+        //     if (this.ResuableAttrListeners == null) {
+        //         this.ResuableAttrListeners = new Dictionary<string, System.Object>();
+        //     }
 
-            // find existing
-            System.Object listener = null;
-            if (this.ResuableAttrListeners.TryGetValue(id, out listener)) {
-                return (AttrListener<ValueT>)listener;
-            }
+        //     // find existing
+        //     System.Object listener = null;
+        //     if (this.ResuableAttrListeners.TryGetValue(id, out listener)) {
+        //         return (AttrListener<ValueT>)listener;
+        //     }
 
-            // create reusable AttrListener
-            var valAttrRef = GetAttr<ValueT>(id);
-            var attrRef = new AttrRef<ValueT>(valAttrRef);
-            var attrListener = new AttrListener<ValueT>(attrRef);
-            // save for later reference
-            this.ResuableAttrListeners.Add(id, (System.Object)listener);
+        //     // create reusable AttrListener
+        //     var valAttrRef = GetAttr<ValueT>(id);
+        //     var attrRef = new AttrRef<ValueT>(valAttrRef);
+        //     var attrListener = new AttrListener<ValueT>(attrRef);
+        //     // save for later reference
+        //     this.ResuableAttrListeners.Add(id, (System.Object)listener);
 
-            return attrListener;
-        }
-
-        // public ValT GetValue<ValT>(string id) {
-        //     var def = (AttrDef<StateT, ValT>)AttrDefs.Find((attrdef) => attrdef.id.Equals(id));
-        //     return def.getter.Invoke(this.Instance);
-        // }
-
-        // public void SetValue<ValT>(string id, ValT val) {
-        //     var def = (AttrDef<StateT, ValT>)AttrDefs.Find((attrdef) => attrdef.id.Equals(id));
-        //     def.setter.Invoke(this.Instance, val);
+        //     return attrListener;
         // }
 
         public override ValueAttr<ValT> GetAttr<ValT>(string id)
         {
-            // if (this.Instance == null) return null;
-            var def = (AttrDef<StateT, ValT>)AttrDefs.Find((attrdef) => attrdef.id.Equals(id));
-            // return def == null ? null : new Attr<StateT, ValT>(this.Instance, (AttrDef<StateT, ValT>)def);
+            var def = AttrDefs.Find((attrdef) => attrdef.id.Equals(id));
             return def == null ? null : (ValueAttr<ValT>)def.CreateAttr();
         }
 
