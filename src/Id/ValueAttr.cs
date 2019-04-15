@@ -12,7 +12,6 @@ namespace MicroState.Id
 
 		public virtual bool IsEqual(BaseAttr other)
 		{
-			Debug.Log("BaseAttr..IsEqual");
 			return false;
 		}
 	}
@@ -50,7 +49,6 @@ namespace MicroState.Id
         public static bool AreEqual(ValueAttr<ValT> a, ValueAttr<ValT> b)
         {
             if (a.Value == null || b.Value == null) return a.Value == null && b.Value == null;
-			Debug.Log("ValueAttr.IsEqual: "+a.Value.ToString() +" == "+b.Value.ToString());
             return a.Value.Equals(b.Value);
         }
 	}
