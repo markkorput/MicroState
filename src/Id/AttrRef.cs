@@ -28,13 +28,22 @@ namespace MicroState.Id
             this.valueAttr_  = valattr;
         }
 
+        private IdStateInstanceBase FindParentStateInstance(string id) {
+			return new List<IdStateInstanceBase>(
+                this.gameObject.GetComponentsInParent<IdStateInstanceBase>())
+                    .Find((stateinstance) => stateinstance.Id.Equals(id));
+        }
+
         private IdStateInstanceBase FindStateInstance(string id)
         {
-            return new List<IdStateInstanceBase>(
-				this.gameObject == null
-    				? GameObject.FindObjectsOfType<IdStateInstanceBase>()
-    				: this.gameObject.GetComponentsInParent<IdStateInstanceBase>())
+            var inst = FindParentStateInstance(id);
+            if (inst == null) {
+                inst = new List<IdStateInstanceBase>(
+                    GameObject.FindObjectsOfType<IdStateInstanceBase>())
                         .Find((stateinstance) => stateinstance.Id.Equals(id));
+            }
+
+            return inst;
         }
 
         /// Public, so the AttrRefEditor class has access to it
