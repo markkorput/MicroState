@@ -17,8 +17,10 @@ namespace MicroState
 		private StateType editorState_ = new StateType();
 		protected StateType EditorState { get { return editorState_; } }
 
+#if UNITY_EDITOR
 		private int activePushes = 0;
 		private int activePulls = 0;
+#endif
 
 		void OnEnable()
 		{
