@@ -17,6 +17,10 @@ namespace MicroState.Id.Components
 		{
 			this.ValueEvent.Invoke(v);
 		}
+
+		public void Add(float v) {
+			this.Set(this.Get()+v);
+		}
 	}
 
 #if UNITY_EDITOR
