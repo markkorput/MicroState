@@ -19,6 +19,14 @@ namespace MicroState.Id.Components
     [System.Serializable]
     public class ValueTypeEvent : UnityEvent<string[]> { }
     public ValueTypeEvent ChangeEvent = new ValueTypeEvent();
+		
+
+    public string JoinString = ", ";
+    [System.Serializable]
+		public class StringEvent : UnityEvent<string> { }
+		public StringEvent JoinedEvent = new StringEvent();
+
+
 
     private MicroState.Id.AttrListener<string[]> attrListener = null;
     private MicroState.Id.AttrListener<string[]> AttrListener
@@ -48,6 +56,9 @@ namespace MicroState.Id.Components
     {
       if (!(this.InvokeWhenInactive || this.isActiveAndEnabled)) return;
       this.ChangeEvent.Invoke(v);
+
+      string joined = string.Join(JoinString, v);
+      this.JoinedEvent.Invoke(joined);
     }
 
     #region Public Action Methods
